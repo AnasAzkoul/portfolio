@@ -1,1 +1,24 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Only our palette exists (transparent/current still work, they are built in). */
+  --color-*: initial;
+
+  /* Backgrounds, lightest to darkest */
+  --color-bg1: #241a12; /* walnut */
+  --color-bg2: #160f09; /* espresso */
+  --color-bg3: #0d0904; /* shadow */
+
+  --color-gold: #c9a24b;
+  --color-gold-hi: #e0c079;
+  --color-pearl: #ece0c8;
+
+  /* Jewel accents only: never fills or text. */
+  --color-red: #a5342b; /* madder */
+  --color-green: #3f6b53; /* jade */
+
+  --color-ink: #efe6d2;
+  /* Just passes WCAG AA on bg1 (~5.0:1): don't make it dimmer. */
+  --color-ink-dim: rgba(239, 230, 210, 0.55);
+  --color-panel: rgba(18, 12, 7, 0.9); /* translucent overlay */
+}
