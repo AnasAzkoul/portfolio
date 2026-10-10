@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { LatticeTurn } from '~/utils/lattice'
+
 const { turn = 0 } = defineProps<{
-  /** Which section the site is on (0–4); each one turns the lattice 22.5°. */
-  turn?: 0 | 1 | 2 | 3 | 4
+  /** Each turn rotates the lattice 22.5°. */
+  turn?: LatticeTurn
 }>()
 
 const { rays, inner, mid, hotStars, rosette, pearls, border } = buildLattice()
