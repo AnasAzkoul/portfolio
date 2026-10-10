@@ -13,7 +13,8 @@ definePageMeta({ turn: 3, crumb: 'STORY' })
       I studied accounting and worked as an accountant and an English teacher
       before I wrote my first line of code. In 2021 I started teaching myself to
       program: JavaScript and TypeScript first, then Vue, Nuxt and React, and
-      enough Node to build my own APIs.
+      enough Node to build my own APIs. In 2026 I became a Certified Vue.js
+      Developer.
     </p>
     <p>
       Today I work at Scala, a digital-signage company. I started in technical

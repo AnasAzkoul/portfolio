@@ -24,7 +24,7 @@ describe('home', () => {
   it('names the site in its heading, with the role and tagline below', async () => {
     const wrapper = await visit('/')
     expect(wrapper.find('h1').text()).toBe('Anas Azkoul')
-    expect(wrapper.find('[data-role]').text()).toBe('Frontend Engineer')
+    expect(wrapper.find('[data-role]').text()).toBe('Frontend Developer')
     expect(wrapper.find('[data-tagline]').text()).toBe(
       'Old-city craft, built in code.'
     )
@@ -166,11 +166,10 @@ describe('stack', () => {
     const wrapper = await visit('/stack')
     const body = wrapper.find('[data-panel-body]')
     expect(body.findAll('h3').map((h) => h.text())).toEqual([
+      'Languages',
       'Frontend',
       'Backend',
-      'Data',
-      'Platform',
-      'AI-assisted development'
+      'Tooling & practices'
     ])
     expect(body.findAll('[data-chip]').map((c) => c.text())).toContain(
       'Drizzle ORM'

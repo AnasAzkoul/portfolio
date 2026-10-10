@@ -1,33 +1,43 @@
 <script setup lang="ts">
-/** Stack: the tools I work with, grouped by area. */
+/** Stack: the tools I work with, grouped as on the CV. */
 definePageMeta({ turn: 2, crumb: 'STACK' })
 
 const groups = [
+  { area: 'Languages', tools: ['JavaScript', 'TypeScript', 'HTML', 'CSS'] },
   {
     area: 'Frontend',
     tools: [
-      'Vue 3',
+      'Vue 3 (Composition API)',
       'Nuxt',
-      'TypeScript',
-      'JavaScript',
       'React',
       'Next.js',
       'Tailwind CSS',
-      'CVA'
+      'Radix UI',
+      'class-variance-authority'
     ]
   },
   {
     area: 'Backend',
-    tools: ['Node.js', 'Hono', 'REST APIs', 'Better Auth', 'PHP (basic)']
+    tools: [
+      'Node.js',
+      'REST API design',
+      'Hono',
+      'Drizzle ORM',
+      'PostgreSQL',
+      'NoSQL',
+      'Better Auth'
+    ]
   },
-  { area: 'Data', tools: ['PostgreSQL', 'Drizzle ORM', 'NoSQL'] },
   {
-    area: 'Platform',
-    tools: ['Cloudflare Workers', 'Cloudflare Pages', 'Vercel', 'Docker']
-  },
-  {
-    area: 'AI-assisted development',
-    tools: ['Claude Code', 'Claude Managed Agents']
+    area: 'Tooling & practices',
+    tools: [
+      'Git',
+      'ESLint',
+      'Prettier',
+      'Claude Code',
+      'Codex',
+      'Component documentation'
+    ]
   }
 ] as const
 </script>

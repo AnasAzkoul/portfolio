@@ -40,10 +40,10 @@ export const projects: readonly Project[] = [
       text: "Component variants and sizes were handled with long if/switch chains, sometimes inside a component's script block. Every new variant meant another branch, and nothing stopped a component from being used with an invalid combination."
     },
     did: {
-      text: 'I introduced class-variance-authority to the codebase. Variant logic moved into dedicated TypeScript files, and the variants were exported as TS types, so misuse shows up in the editor instead of on screen. Alongside that I rebuilt many of the atomic components the team relies on and wrote their documentation.'
+      text: 'I introduced class-variance-authority to the codebase. Variant logic moved into dedicated TypeScript files, and the variants were exported as TS types, so misuse shows up in the editor instead of on screen. Alongside that I rebuilt a large part of the shared atomic component library other developers build on, and wrote its documentation.'
     },
     outcome: {
-      text: "Shipped to production; the pattern wasn't in the codebase before.",
+      text: "Shipped to production; the pattern wasn't in the codebase before, and it made the components reusable and scalable.",
       todo: 'add: how many components use it now, or what it changed for the team'
     },
     stack: ['Vue 3', 'Nuxt', 'TypeScript', 'CVA']
@@ -62,8 +62,8 @@ export const projects: readonly Project[] = [
       todo: 'add: the breaking changes that mattered most'
     },
     did: {
-      text: "I carried out the migration inside an AI-assisted workflow with Claude Code, following a process defined by the team's senior developer.",
-      todo: 'add: the parts you owned and one decision you made'
+      text: "I carried out the migration inside an AI-assisted workflow with Claude Code, following a process defined by the team's senior developer. I drove the migration, reviewed the generated changes and resolved the issues it turned up.",
+      todo: 'add: one decision you made'
     },
     outcome: { todo: 'add: result, issues found and fixed' },
     stack: ['Nuxt 4', 'Vue 3', 'TypeScript', 'Claude Code']
@@ -101,7 +101,7 @@ export const projects: readonly Project[] = [
       text: 'Generating structured lessons with AI, without building agent infrastructure from scratch.'
     },
     did: {
-      text: 'A Nuxt frontend and a Hono/Node API, with Drizzle ORM, Better Auth and PostgreSQL, deployed on Cloudflare Workers and Pages. Lesson generation uses Claude Managed Agents in an orchestrator–subagent architecture. The architecture lives in an Obsidian vault that a Claude Code skill reads, loading only the docs relevant to each task.'
+      text: 'A Nuxt frontend and a Hono/Node API, with Drizzle ORM, Better Auth and PostgreSQL, deployed on Cloudflare Workers, D1 and Pages. Lesson generation uses Claude Managed Agents in an orchestrator–subagent architecture. The architecture lives in an Obsidian vault that a Claude Code skill reads, loading only the docs relevant to each task.'
     },
     outcome: {
       text: 'In active development.',

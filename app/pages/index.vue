@@ -38,7 +38,7 @@ const reveal = computed(() => [
       <span lang="ar" class="font-serif text-[20px] tracking-normal text-pearl">
         دمشق
       </span>
-      <span>DAMASCUS → SITTARD</span>
+      <span>DAMASCUS → WEERT</span>
       <span
         aria-hidden="true"
         class="h-px w-[34px] bg-[linear-gradient(90deg,transparent,var(--color-gold),transparent)]"
@@ -63,7 +63,7 @@ const reveal = computed(() => [
       class="font-mono text-[clamp(12px,1.6vw,15px)] tracking-[8px] text-ink-dim uppercase delay-[860ms]"
       :class="reveal"
     >
-      Frontend Engineer
+      Frontend Developer
     </p>
     <p
       data-tagline
