@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anas Azkoul — Damascus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#241a12;
+    --bg2:#160f09;
+    --bg3:#0d0904;
+    --gold:#c9a24b;
+    --gold-hi:#e0c079;
+    --pearl:#ece0c8;
+    --red:#a5342b;
+    --green:#3f6b53;
+    --ink:#efe6d2;
+    --ink-dim:rgba(239,230,210,.55);
+    --panel:rgba(18,12,7,.9);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    height:100vh;overflow:hidden;position:relative;
+    background:radial-gradient(circle at 50% 44%, var(--bg1) 0%, var(--bg2) 46%, var(--bg3) 100%);
+    color:var(--ink);font-family:"Cormorant Garamond",Georgia,serif;
+  }
+
+  /* ---------- mosaic (unchanged) ---------- */
+  #mosaic{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;
+    transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+  #mosaic svg{width:min(150vh,150vw);height:min(150vh,150vw);opacity:0;
+    transform:scale(.985);transition:opacity 1.6s ease,transform 2s ease}
+  #mosaic.in svg{opacity:1;transform:scale(1)}
+  #spin{transform-box:fill-box;transform-origin:center;animation:spin 200s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .g-line{fill:none;stroke:var(--gold);stroke-width:1;opacity:.20;stroke-linejoin:round}
+  .g-line2{fill:none;stroke:var(--gold-hi);stroke-width:1;opacity:.28;stroke-linejoin:round}
+  .g-fine{fill:none;stroke:var(--gold);stroke-width:.7;opacity:.12;stroke-linejoin:round}
+  .g-pearl{fill:none;stroke:var(--pearl);stroke-width:.8;opacity:.15;stroke-linejoin:round}
+  .acc-red{fill:var(--red);opacity:.55}
+  .acc-grn{fill:var(--green);opacity:.55}
+  .acc-prl{fill:var(--pearl);opacity:.55}
+  .hot{transition:filter .35s ease}
+  .hot .hit{fill:transparent;pointer-events:all;cursor:pointer}
+  .hot .g-line2,.hot .g-fine,.hot .acc-red,.hot .acc-grn,.hot .acc-prl{transition:opacity .35s ease}
+  .hot:hover{filter:drop-shadow(0 0 6px rgba(224,192,121,.8))}
+  .hot:hover .g-line2{opacity:.85}
+  .hot:hover .g-fine{opacity:.55}
+  .hot:hover .acc-red,.hot:hover .acc-grn,.hot:hover .acc-prl{opacity:.95}
+
+  .center-glow{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(circle at 50% 46%, rgba(22,15,9,.92) 0%, rgba(22,15,9,.55) 16%, transparent 34%)}
+  .vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(circle at 50% 46%, transparent 52%, var(--bg3) 92%)}
+
+  /* ---------- views ---------- */
+  .view{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:90px 24px 70px;pointer-events:none;
+    opacity:0;visibility:hidden;transform:scale(.97);
+    transition:opacity .45s ease,transform .55s ease,visibility 0s linear .55s}
+  .view.active{opacity:1;visibility:visible;transform:none;
+    transition:opacity .6s ease .15s,transform .7s cubic-bezier(.2,.7,.2,1) .15s,visibility 0s}
+  #detail:not(.active){transform:scale(.35)}
+  h1:focus,h2:focus{outline:none}
+
+  /* home (unchanged look) */
+  #home{text-align:center}
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity 1s ease .5s,transform 1s ease .5s}
+  #home.in .reveal{opacity:1;transform:none}
+  #home.in .reveal.d2{transition-delay:.68s}
+  #home.in .reveal.d3{transition-delay:.86s}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:5px;color:var(--gold-hi);
+    margin-bottom:22px;display:flex;align-items:center;gap:14px}
+  .eyebrow .ar{font-family:"Cormorant Garamond",serif;font-size:20px;letter-spacing:0;color:var(--pearl)}
+  .eyebrow .rule{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  #home h1{font-weight:500;font-size:clamp(52px,11vw,140px);line-height:.9;letter-spacing:1px;color:var(--ink)}
+  #home h1 .amp{font-style:italic;font-weight:400}
+  .diamond{margin:20px auto 18px;width:44px;height:44px}
+  .diamond svg{width:100%;height:100%}
+  .role{font-family:"Space Mono",monospace;font-size:clamp(12px,1.6vw,15px);letter-spacing:8px;
+    text-transform:uppercase;color:var(--ink-dim)}
+  .tag{margin-top:26px;font-style:italic;font-size:clamp(17px,2.4vw,22px);color:var(--gold-hi);opacity:.9}
+
+  /* work: cartouches around the centre */
+  .work-grid{--c:clamp(132px,21vh,190px);display:grid;gap:18px;
+    grid-template-columns:repeat(3,var(--c));grid-template-rows:repeat(3,var(--c));
+    grid-template-areas:". n ." "w t e" ". s ."}
+  .work-title{grid-area:t;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .work-title h2{font-weight:500;font-size:clamp(24px,3vw,32px);line-height:1}
+  .work-title .diamond{width:26px;height:26px;margin:12px auto 10px}
+  .mono-s{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--ink-dim)}
+  .cart{pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:8px;padding:14px;text-decoration:none;color:var(--ink);
+    background:rgba(18,12,7,.82);border:1px solid rgba(201,162,75,.38);
+    box-shadow:inset 0 0 0 4px rgba(18,12,7,.82),inset 0 0 0 5px rgba(201,162,75,.16);
+    opacity:0;transform:scale(.9);
+    transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s}
+  #work.active .cart{opacity:1;transform:none;transition-delay:var(--d),var(--d),0s,0s}
+  .cart:hover,.cart:focus-visible{outline:none;border-color:rgba(224,192,121,.8);
+    box-shadow:inset 0 0 0 4px rgba(18,12,7,.82),inset 0 0 0 5px rgba(224,192,121,.4),0 0 12px rgba(224,192,121,.18)}
+  .cart .num{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:2px;color:var(--gold)}
+  .cart svg{width:34px;height:34px}
+  .cart svg .s{fill:none;stroke:var(--gold-hi);stroke-width:1;opacity:.45;transition:opacity .35s}
+  .cart:hover svg .s,.cart:focus-visible svg .s{opacity:.95}
+  .cart .name{font-size:clamp(17px,2vw,21px);font-weight:500;line-height:1.05}
+  .cart .meta{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--ink-dim)}
+  .a-n{grid-area:n}.a-e{grid-area:e}.a-s{grid-area:s}.a-w{grid-area:w}
+
+  /* framed panel */
+  .panel{position:relative;pointer-events:auto;width:min(760px,92vw);max-height:min(74vh,720px);
+    display:flex;flex-direction:column;background:var(--panel);
+    border:1px solid rgba(201,162,75,.45);
+    box-shadow:inset 0 0 0 5px var(--panel),inset 0 0 0 6px rgba(201,162,75,.22),0 20px 60px rgba(0,0,0,.5);
+    backdrop-filter:blur(3px)}
+  .panel.narrow{width:min(560px,92vw)}
+  .orn{position:absolute;width:10px;height:10px;border:1px solid var(--gold);transform:rotate(45deg);background:var(--panel)}
+  .orn.tl{top:-6px;left:-6px}.orn.tr{top:-6px;right:-6px}.orn.bl{bottom:-6px;left:-6px}.orn.br{bottom:-6px;right:-6px}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+    padding:28px 34px 16px;border-bottom:1px solid rgba(201,162,75,.18)}
+  .kicker{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:4px;color:var(--gold-hi);margin-bottom:8px}
+  .panel h2{font-weight:500;font-size:clamp(28px,4vw,40px);line-height:1}
+  .x{flex-shrink:0;background:none;border:1px solid rgba(201,162,75,.35);color:var(--ink-dim);
+    font-family:"Space Mono",monospace;font-size:10px;letter-spacing:2px;padding:6px 10px;cursor:pointer;
+    text-decoration:none;transition:color .2s,border-color .2s}
+  .x:hover,.x:focus-visible{color:var(--gold-hi);border-color:var(--gold-hi);outline:none}
+  .panel-body{overflow-y:auto;overscroll-behavior:contain;padding:8px 34px 32px;
+    scrollbar-width:thin;scrollbar-color:rgba(201,162,75,.4) transparent}
+  .panel-body h3{font-family:"Space Mono",monospace;font-weight:400;font-size:11px;letter-spacing:4px;
+    color:var(--gold);text-transform:uppercase;margin:24px 0 8px}
+  .panel-body p{font-size:19px;line-height:1.55;color:var(--ink)}
+  .panel-body p + p{margin-top:12px}
+  .todo{color:#e3907f;font-style:italic}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:1px;color:var(--ink);
+    border:1px solid rgba(201,162,75,.35);padding:5px 10px}
+  .links a{display:flex;justify-content:space-between;gap:16px;padding:14px 0;
+    border-bottom:1px solid rgba(201,162,75,.16);color:var(--ink);text-decoration:none;font-size:20px;transition:color .2s}
+  .links a span{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:2px;color:var(--ink-dim);align-self:center}
+  .links a:hover,.links a:focus-visible{color:var(--gold-hi);outline:none}
+
+  /* ---------- corner chrome ---------- */
+  .corner{position:absolute;z-index:3;font-family:"Space Mono",monospace}
+  .mark{top:34px;left:44px;font-size:13px;letter-spacing:3px;color:var(--ink-dim);text-decoration:none}
+  .mark b{color:var(--gold-hi);font-weight:400}
+  .mark:focus-visible{outline:1px solid var(--gold);outline-offset:5px}
+  .nav{top:36px;right:44px;display:flex;gap:26px}
+  .nav a{font-size:12px;letter-spacing:3px;color:var(--ink-dim);text-decoration:none;transition:color .2s;position:relative}
+  .nav a:hover,.nav a[aria-current="page"]{color:var(--gold-hi)}
+  .nav a[aria-current="page"]::after{content:"";position:absolute;left:50%;bottom:-10px;width:5px;height:5px;
+    border:1px solid var(--gold-hi);transform:translateX(-50%) rotate(45deg)}
+  .nav a:focus-visible{outline:1px solid var(--gold);outline-offset:5px}
+  .foot{bottom:30px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:4px;
+    color:var(--ink-dim);opacity:.6;white-space:nowrap}
+
+  @media (max-width:720px){
+    .mark{left:24px;top:24px}
+    .nav{top:auto;bottom:22px;right:50%;transform:translateX(50%);gap:18px}
+    .foot{display:none}
+    .view{padding:70px 16px 64px}
+    .work-grid{--c:42vw;grid-template-columns:repeat(2,var(--c));grid-template-rows:auto var(--c) var(--c);
+      grid-template-areas:"t t" "n e" "w s";gap:12px}
+    .panel-head{padding:22px 22px 14px}.panel-body{padding:6px 22px 26px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #spin{animation:none}
+    #mosaic,#mosaic svg,.reveal,.view,.view.active,.cart{transition:none}
+    #mosaic svg,.reveal,.cart{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+  <div id="mosaic"><svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g id="spin"></g></svg></div>
+  <div class="center-glow"></div>
+  <div class="vignette"></div>
+
+  <!-- HOME -->
+  <main class="view" id="home" aria-labelledby="home-title">
+    <div class="eyebrow reveal"><span class="rule"></span><span class="ar" lang="ar">دمشق</span><span>DAMASCUS → SITTARD</span><span class="rule"></span></div>
+    <h1 class="reveal d2" id="home-title" tabindex="-1">Anas <span class="amp">Azkoul</span></h1>
+    <div class="diamond reveal d2" aria-hidden="true">
+      <svg viewBox="0 0 44 44"><g fill="none" stroke="var(--gold)" stroke-width="1">
+        <path d="M22 2 L42 22 L22 42 L2 22 Z"/><path d="M22 9 L35 22 L22 35 L9 22 Z"/>
+        <circle cx="22" cy="22" r="2.6" fill="var(--gold-hi)" stroke="none"/>
+      </g></svg>
+    </div>
+    <div class="role reveal d3">Frontend Engineer</div>
+    <div class="tag reveal d3">Old-city craft, built in code.</div>
+  </main>
+
+  <!-- WORK -->
+  <section class="view" id="work" aria-labelledby="work-title">
+    <div class="work-grid" id="work-grid">
+      <div class="work-title">
+        <h2 id="work-title" tabindex="-1">Selected Work</h2>
+        <div class="diamond" aria-hidden="true">
+          <svg viewBox="0 0 44 44"><g fill="none" stroke="var(--gold)" stroke-width="1.4">
+            <path d="M22 2 L42 22 L22 42 L2 22 Z"/><circle cx="22" cy="22" r="3" fill="var(--gold-hi)" stroke="none"/>
+          </g></svg>
+        </div>
+        <div class="mono-s">04 PROJECTS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK DETAIL -->
+  <section class="view" id="detail" aria-labelledby="detail-title">
+    <article class="panel">
+      <span class="orn tl"></span><span class="orn tr"></span><span class="orn bl"></span><span class="orn br"></span>
+      <header class="panel-head">
+        <div><div class="kicker" id="detail-kicker"></div><h2 id="detail-title" tabindex="-1"></h2></div>
+        <a class="x" href="#/work" aria-label="Back to all work">ESC ✕</a>
+      </header>
+      <div class="panel-body" id="detail-body"></div>
+    </article>
+  </section>
+
+  <!-- STACK -->
+  <section class="view" id="stack" aria-labelledby="stack-title">
+    <div class="panel">
+      <span class="orn tl"></span><span class="orn tr"></span><span class="orn bl"></span><span class="orn br"></span>
+      <header class="panel-head"><div><div class="kicker">02 · TOOLS OF THE CRAFT</div><h2 id="stack-title" tabindex="-1">Stack</h2></div>
+        <a class="x" href="#/" aria-label="Close">ESC ✕</a></header>
+      <div class="panel-body">
+        <h3>Frontend</h3><div class="chips"><span>Vue 3</span><span>Nuxt</span><span>TypeScript</span><span>JavaScript</span><span>React</span><span>Next.js</span><span>Tailwind CSS</span><span>CVA</span></div>
+        <h3>Backend</h3><div class="chips"><span>Node.js</span><span>Hono</span><span>REST APIs</span><span>Better Auth</span><span>PHP (basic)</span></div>
+        <h3>Data</h3><div class="chips"><span>PostgreSQL</span><span>Drizzle ORM</span><span>NoSQL</span></div>
+        <h3>Platform</h3><div class="chips"><span>Cloudflare Workers</span><span>Cloudflare Pages</span><span>Vercel</span><span>Docker</span></div>
+        <h3>AI-assisted development</h3><div class="chips"><span>Claude Code</span><span>Claude Managed Agents</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="view" id="story" aria-labelledby="story-title">
+    <div class="panel">
+      <span class="orn tl"></span><span class="orn tr"></span><span class="orn bl"></span><span class="orn br"></span>
+      <header class="panel-head"><div><div class="kicker">03 · DRAFT COPY</div><h2 id="story-title" tabindex="-1">Story</h2></div>
+        <a class="x" href="#/" aria-label="Close">ESC ✕</a></header>
+      <div class="panel-body">
+        <p>I grew up in Damascus, a city where craftsmen build patterns like the one behind this page out of thousands of small pieces, each one cut to fit.</p>
+        <p>I studied accounting and worked as an accountant and an English teacher before I wrote my first line of code. In 2021 I started teaching myself to program: JavaScript and TypeScript first, then Vue, Nuxt and React, and enough Node to build my own APIs.</p>
+        <p>Today I work at Scala, a digital-signage company. I started in technical support, and I now also work as a frontend developer in the services team, where my work on the Quintet platform has shipped to production.</p>
+        <p>Accounting taught me precision, teaching taught me to explain, and support taught me what users actually run into. I bring all three to the frontend.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="view" id="contact" aria-labelledby="contact-title">
+    <div class="panel narrow">
+      <span class="orn tl"></span><span class="orn tr"></span><span class="orn bl"></span><span class="orn br"></span>
+      <header class="panel-head"><div><div class="kicker">04 · OPEN TO FRONTEND ROLES IN NL</div><h2 id="contact-title" tabindex="-1">Contact</h2></div>
+        <a class="x" href="#/" aria-label="Close">ESC ✕</a></header>
+      <div class="panel-body links">
+        <a href="#/contact">Email <span class="todo">[add address]</span></a>
+        <a href="https://github.com/AnasAzkoul" target="_blank" rel="noopener">GitHub <span>@ANASAZKOUL ↗</span></a>
+        <a href="#/contact">LinkedIn <span class="todo">[add profile]</span></a>
+      </div>
+    </div>
+  </section>
+
+  <a class="corner mark" href="#/">A. AZKOUL · <b>EST. DAMASCUS</b></a>
+  <nav class="corner nav" aria-label="Sections">
+    <a href="#/work" data-r="work">WORK</a><a href="#/stack" data-r="stack">STACK</a>
+    <a href="#/story" data-r="story">STORY</a><a href="#/contact" data-r="contact">CONTACT</a>
+  </nav>
+  <div class="corner foot" id="crumb" aria-hidden="true">— SELECT A SECTION —</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- mosaic generator (unchanged) ---------- */
+  var NS='http://www.w3.org/2000/svg', C=500, root=document.getElementById('spin');
+  function pt(r,a){return [C+r*Math.cos(a), C+r*Math.sin(a)];}
+  var cur=root;
+  function add(el){cur.appendChild(el);}
+  function path(d,cls){var p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('class',cls);add(p);return p;}
+  function circle(r,cls){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',C);c.setAttribute('cy',C);c.setAttribute('r',r);c.setAttribute('class',cls);add(c);}
+  function dot(x,y,r,cls){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r);c.setAttribute('class',cls);add(c);}
+  function star(cx,cy,ro,ri,n,rot,cls){
+    var d='',step=Math.PI/n;
+    for(var i=0;i<2*n;i++){var r=(i%2===0)?ro:ri,a=rot+i*step,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);d+=(i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' ';}
+    return path(d+'Z',cls);
+  }
+  function poly(cx,cy,r,n,rot,cls){
+    var d='';for(var i=0;i<n;i++){var a=rot+i*2*Math.PI/n,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);d+=(i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' ';}
+    return path(d+'Z',cls);
+  }
+  function girih(cx,cy,r,n,skip,rot,cls){
+    var d='';for(var i=0;i<=n;i++){var a=rot+i*skip*2*Math.PI/n,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);d+=(i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' ';}
+    return path(d,cls);
+  }
+  for(var i=0;i<16;i++){var a=i*Math.PI/8;var p1=pt(96,a),p2=pt(452,a);path('M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'L'+p2[0].toFixed(1)+' '+p2[1].toFixed(1),'g-fine');}
+  poly(C,C,80,8,Math.PI/8,'g-line2');
+  star(C,C,152,94,16,0,'g-line');
+  girih(C,C,120,8,3,Math.PI/8,'g-fine');
+  poly(C,C,252,8,Math.PI/8,'g-line');
+  girih(C,C,252,8,2,0,'g-fine');
+  girih(C,C,252,8,3,Math.PI/8,'g-fine');
+  var accents=['acc-red','acc-prl','acc-grn','acc-prl'];
+  for(var k=0;k<8;k++){
+    var a=k*Math.PI/4+Math.PI/8, cx=C+252*Math.cos(a), cy=C+252*Math.sin(a);
+    var g=document.createElementNS(NS,'g'); g.setAttribute('class','hot');
+    var hit=document.createElementNS(NS,'circle');
+    hit.setAttribute('cx',cx); hit.setAttribute('cy',cy); hit.setAttribute('r',50); hit.setAttribute('class','hit');
+    g.appendChild(hit);
+    cur=g;
+    star(cx,cy,48,27,8,Math.PI/8,'g-line2');
+    poly(cx,cy,20,8,0,'g-fine');
+    dot(cx,cy,3.4,accents[k%4]);
+    cur=root; root.appendChild(g);
+  }
+  star(C,C,362,252,16,Math.PI/16,'g-line');
+  girih(C,C,362,16,6,Math.PI/16,'g-fine');
+  for(var t=0;t<16;t++){var a2=t*Math.PI/8;var pp=pt(152,a2);dot(pp[0],pp[1],2.1,'acc-prl');}
+  circle(420,'g-fine'); circle(454,'g-fine');
+  var N=56;
+  for(var m=0;m<N;m++){
+    var a0=m*2*Math.PI/N, a1=(m+1)*2*Math.PI/N, am=(a0+a1)/2;
+    var iA=pt(420,a0), iB=pt(420,a1), oM=pt(454,am), iM=pt(420,am), oA=pt(454,a0), oB=pt(454,a1);
+    var d=(m%2===0)
+      ? 'M'+iA[0].toFixed(1)+' '+iA[1].toFixed(1)+'L'+iB[0].toFixed(1)+' '+iB[1].toFixed(1)+'L'+oM[0].toFixed(1)+' '+oM[1].toFixed(1)+'Z'
+      : 'M'+oA[0].toFixed(1)+' '+oA[1].toFixed(1)+'L'+oB[0].toFixed(1)+' '+oB[1].toFixed(1)+'L'+iM[0].toFixed(1)+' '+iM[1].toFixed(1)+'Z';
+    path(d, m%2===0?'g-fine':'g-pearl');
+  }
+
+  /* ---------- project data ---------- */
+  var TODO = function(s){ return '<span class="todo">['+s+']</span>'; };
+  var projects = [
+    { id:'variant-system', area:'a-n', name:'Variant System', kicker:'01 · QUINTET · SCALA', meta:'VUE · NUXT · TS · CVA',
+      context:'Quintet is Scala\'s menu-board platform for quick-service restaurants: a canvas-based design app and a set of self-order terminals, built in TypeScript and Nuxt. Other developers build their screens on its library of atomic UI components.',
+      problem:'Component variants and sizes were handled with long if/switch chains, sometimes inside a component\'s script block. Every new variant meant another branch, and nothing stopped a component from being used with an invalid combination.',
+      did:'I introduced class-variance-authority to the codebase. Variant logic moved into dedicated TypeScript files, and the variants were exported as TS types, so misuse shows up in the editor instead of on screen. Alongside that I rebuilt many of the atomic components the team relies on and wrote their documentation.',
+      outcome:'Shipped to production; the pattern wasn\'t in the codebase before. '+TODO('add: how many components use it now, or what it changed for the team'),
+      stack:['Vue 3','Nuxt','TypeScript','CVA'] },
+    { id:'nuxt-4-migration', area:'a-e', name:'Nuxt 3 → 4 Migration', kicker:'02 · QUINTET · SCALA', meta:'NUXT 4 · CLAUDE CODE',
+      context:'One of my last Quintet tasks: moving the platform from Nuxt 3 to Nuxt 4.',
+      problem:'A framework major-version upgrade across a multi-app production codebase. '+TODO('add: the breaking changes that mattered most'),
+      did:'I carried out the migration inside an AI-assisted workflow with Claude Code, following a process defined by the team\'s senior developer. '+TODO('add: the parts you owned and one decision you made'),
+      outcome:TODO('add: result, issues found and fixed'),
+      stack:['Nuxt 4','Vue 3','TypeScript','Claude Code'] },
+    { id:'white-label-terminals', area:'a-s', name:'White-label Terminals', kicker:'03 · QUINTET SOT · SCALA', meta:'THEMING · PAYMENTS',
+      context:'Quintet\'s self-order terminals are the customer-facing kiosks, deployed for different restaurant brands.',
+      problem:'Each customer needed the kiosks in their own branding, and each had its own checkout process.',
+      did:'I re-skinned the entire terminal UI into a themeable system, so a customer\'s branding becomes configuration rather than a fork, and adapted the payment flows to fit different customers\' checkout processes.',
+      outcome:TODO('add: number of brands, or what onboarding a new customer looks like now'),
+      stack:['Vue 3','Nuxt','TypeScript','Theming'] },
+    { id:'learnflow', area:'a-w', name:'LearnFlow', kicker:'04 · PERSONAL PROJECT', meta:'NUXT · HONO · CLOUDFLARE · AI',
+      context:'An AI-powered learning platform I\'m building on my own time.',
+      problem:'Generating structured lessons with AI, without building agent infrastructure from scratch.',
+      did:'A Nuxt frontend and a Hono/Node API, with Drizzle ORM, Better Auth and PostgreSQL, deployed on Cloudflare Workers and Pages. Lesson generation uses Claude Managed Agents in an orchestrator–subagent architecture. The architecture lives in an Obsidian vault that a Claude Code skill reads, loading only the docs relevant to each task.',
+      outcome:'In active development. '+TODO('add: repo or demo link once public'),
+      stack:['Nuxt','Hono','Drizzle','PostgreSQL','Better Auth','Cloudflare','Claude Managed Agents'] }
+  ];
+  var jewels=['var(--red)','var(--pearl)','var(--green)','var(--gold-hi)'];
+
+  // build cartouches
+  var grid=document.getElementById('work-grid');
+  projects.forEach(function(p,i){
+    var a=document.createElement('a');
+    a.className='cart '+p.area; a.href='#/work/'+p.id; a.style.setProperty('--d',(0.25+i*0.08)+'s');
+    a.innerHTML='<span class="num">0'+(i+1)+'</span>'+
+      '<svg viewBox="0 0 34 34" aria-hidden="true"><path class="s" d="'+starPath(17,17,15,8.5,8)+'"/>'+
+      '<circle cx="17" cy="17" r="2.4" fill="'+jewels[i]+'" opacity=".8"/></svg>'+
+      '<span class="name">'+p.name+'</span><span class="meta">'+p.meta+'</span>';
+    a.addEventListener('click',function(){
+      var r=a.getBoundingClientRect(); origin=[r.left+r.width/2, r.top+r.height/2];
+    });
+    grid.appendChild(a);
+  });
+  function starPath(cx,cy,ro,ri,n){
+    var d='',step=Math.PI/n;
+    for(var i=0;i<2*n;i++){var r=i%2?ri:ro,a=-Math.PI/2+i*step;d+=(i?'L':'M')+(cx+r*Math.cos(a)).toFixed(2)+' '+(cy+r*Math.sin(a)).toFixed(2);}
+    return d+'Z';
+  }
+
+  /* ---------- router ---------- */
+  var views={home:'home',work:'work',detail:'detail',stack:'stack',story:'story',contact:'contact'};
+  var turn={home:0,work:1,detail:1,stack:2,story:3,contact:4};
+  var titles={home:'Anas Azkoul',work:'Work',stack:'Stack',story:'Story',contact:'Contact'};
+  var origin=null, first=true, currentView='home';
+  var mosaicEl=document.getElementById('mosaic');
+
+  function parse(){
+    var parts=(location.hash.replace(/^#\/?/,'')||'').split('/').filter(Boolean);
+    if(!parts.length) return {view:'home'};
+    if(parts[0]==='work' && parts[1]) return {view:'detail',id:parts[1]};
+    return views[parts[0]] ? {view:parts[0]} : {view:'home'};
+  }
+
+  function renderDetail(id){
+    var p=projects.filter(function(x){return x.id===id;})[0];
+    if(!p){ location.replace('#/work'); return false; }
+    document.getElementById('detail-kicker').textContent=p.kicker;
+    document.getElementById('detail-title').textContent=p.name;
+    var body=document.getElementById('detail-body');
+    body.innerHTML='<h3>Context</h3><p>'+p.context+'</p><h3>Problem</h3><p>'+p.problem+'</p>'+
+      '<h3>What I did</h3><p>'+p.did+'</p><h3>Outcome</h3><p>'+p.outcome+'</p>'+
+      '<h3>Stack</h3><div class="chips">'+p.stack.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div>';
+    body.scrollTop=0;
+    var dv=document.getElementById('detail');
+    dv.style.transformOrigin = origin ? origin[0]+'px '+origin[1]+'px' : '50% 50%';
+    origin=null;
+    document.title=p.name+' — Anas Azkoul';
+    return true;
+  }
+
+  function route(){
+    var r=parse();
+    if(r.view==='detail' && !renderDetail(r.id)) return;
+    if(r.view!=='detail') document.title=titles[r.view]+(r.view==='home'?'':' — Anas Azkoul');
+    currentView=r.view;
+
+    Object.keys(views).forEach(function(v){
+      document.getElementById(views[v]).classList.toggle('active', v===r.view);
+    });
+    var navKey = r.view==='detail' ? 'work' : r.view;
+    document.querySelectorAll('.nav a').forEach(function(a){
+      if(a.dataset.r===navKey) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+    document.getElementById('crumb').textContent = r.view==='home' ? '— SELECT A SECTION —' : '— '+(navKey.toUpperCase())+' —';
+    if(!reduce) mosaicEl.style.transform='rotate('+(turn[r.view]*22.5)+'deg)';
+
+    if(!first){
+      var h=document.querySelector('#'+views[r.view]+' [tabindex="-1"]');
+      if(h) setTimeout(function(){ h.focus({preventScroll:true}); }, reduce?0:220);
+    }
+    first=false;
+  }
+
+  window.addEventListener('hashchange',route);
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    if(currentView==='detail') location.hash='#/work';
+    else if(currentView!=='home') location.hash='#/';
+  });
+
+  function go(){ mosaicEl.classList.add('in'); document.getElementById('home').classList.add('in'); }
+  window.addEventListener('load',function(){ reduce?go():setTimeout(go,180); });
+  route();
+})();
+</script>
+</body>
+</html>
