@@ -38,6 +38,16 @@ const TRIANGLES = 56
 
 const fmt1 = ([x, y]: [number, number]) => `${x.toFixed(1)} ${y.toFixed(1)}`
 
+// Circle centres are rounded like the path coordinates: Node and the browser
+// can disagree on the last digit of Math.sin, and the server-rendered SVG
+// would then fail to hydrate.
+const round2 = (n: number) => +n.toFixed(2)
+const circle = (
+  [cx, cy]: [number, number],
+  r: number,
+  cls: string
+): LatticeCircle => ({ cx: round2(cx), cy: round2(cy), r, cls })
+
 function rays(): LatticePath[] {
   return Array.from({ length: 16 }, (_, i) => ({
     d: `M${fmt1(pt(96, i * EIGHTH))}L${fmt1(pt(452, i * EIGHTH))}`,
@@ -47,14 +57,15 @@ function rays(): LatticePath[] {
 
 function hotStars(): HotStar[] {
   return Array.from({ length: 8 }, (_, k) => {
-    const [cx, cy] = pt(252, k * (Math.PI / 4) + EIGHTH)
+    const centre = pt(252, k * (Math.PI / 4) + EIGHTH)
+    const [cx, cy] = centre
     return {
-      hit: { cx, cy, r: 50, cls: 'hit' },
+      hit: circle(centre, 50, 'hit'),
       paths: [
         { d: star(cx, cy, 48, 27, 8, EIGHTH), cls: 'g-line2' },
         { d: poly(cx, cy, 20, 8, 0), cls: 'g-fine' }
       ],
-      dot: { cx, cy, r: 3.4, cls: HOT_ACCENTS[k % 4]! }
+      dot: circle(centre, 3.4, HOT_ACCENTS[k % 4]!)
     }
   })
 }
@@ -94,12 +105,11 @@ export function buildLattice(): Lattice {
       { d: star(C, C, 362, 252, 16, Math.PI / 16), cls: 'g-line' },
       { d: girih(C, C, 362, 16, 6, Math.PI / 16), cls: 'g-fine' }
     ],
-    pearls: Array.from({ length: 16 }, (_, t) => {
-      const [cx, cy] = pt(152, t * EIGHTH)
-      return { cx, cy, r: 2.1, cls: 'acc-prl' }
-    }),
+    pearls: Array.from({ length: 16 }, (_, t) =>
+      circle(pt(152, t * EIGHTH), 2.1, 'acc-prl')
+    ),
     border: {
-      rings: [420, 454].map((r) => ({ cx: C, cy: C, r, cls: 'g-fine' })),
+      rings: [420, 454].map((r) => circle([C, C], r, 'g-fine')),
       triangles: triangles()
     }
   }

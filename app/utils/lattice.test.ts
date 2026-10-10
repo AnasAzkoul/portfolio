@@ -86,6 +86,20 @@ describe('buildLattice', () => {
     expect(lattice.pearls.every((p) => p.cls === 'acc-prl')).toBe(true)
   })
 
+  // Node and the browser can differ in the last digit of Math.sin, which
+  // would make the server-rendered SVG fail to hydrate.
+  it('rounds every circle centre to 2 decimals, as the paths are', () => {
+    const circles = [
+      ...lattice.hotStars.flatMap((s) => [s.hit, s.dot]),
+      ...lattice.pearls,
+      ...lattice.border.rings
+    ]
+    for (const { cx, cy } of circles) {
+      expect(cx).toBe(+cx.toFixed(2))
+      expect(cy).toBe(+cy.toFixed(2))
+    }
+  })
+
   it('frames the lattice with two rings and 56 alternating triangles', () => {
     expect(lattice.border.rings.map((r) => r.r)).toEqual([420, 454])
     expect(lattice.border.triangles).toHaveLength(56)
