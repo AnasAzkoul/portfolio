@@ -8,6 +8,18 @@ function visit(route: string) {
   return mountSuspended(App, { route })
 }
 
+type Wrapper = Awaited<ReturnType<typeof visit>>
+
+// What the layout shows for the page: how far the lattice turned, and the
+// breadcrumb.
+function stage(wrapper: Wrapper) {
+  const style = wrapper.find('[data-lattice] svg').attributes('style') ?? ''
+  return {
+    turn: style.match(/--turn: ([^;]+)/)?.[1],
+    crumb: wrapper.find('[data-crumb]').text()
+  }
+}
+
 describe('home', () => {
   it('names the site in its heading, with the role and tagline below', async () => {
     const wrapper = await visit('/')
@@ -33,10 +45,10 @@ describe('home', () => {
 
   it('leaves the lattice unturned and invites a choice', async () => {
     const wrapper = await visit('/')
-    expect(wrapper.find('[data-lattice] svg').attributes('style')).toContain(
-      '--turn: 0deg'
-    )
-    expect(wrapper.find('[data-crumb]').text()).toBe('— SELECT A SECTION —')
+    expect(stage(wrapper)).toEqual({
+      turn: '0deg',
+      crumb: '— SELECT A SECTION —'
+    })
   })
 })
 
@@ -60,10 +72,7 @@ describe('work', () => {
 
   it('turns the lattice one step and labels the breadcrumb', async () => {
     const wrapper = await visit('/work')
-    expect(wrapper.find('[data-lattice] svg').attributes('style')).toContain(
-      '--turn: 22.5deg'
-    )
-    expect(wrapper.find('[data-crumb]').text()).toBe('— WORK —')
+    expect(stage(wrapper)).toEqual({ turn: '22.5deg', crumb: '— WORK —' })
   })
 
   it('leaves the grid open while no project is', async () => {
@@ -109,10 +118,7 @@ describe('a project', () => {
 
   it('keeps the lattice and breadcrumb where Work left them', async () => {
     const wrapper = await visit('/work/learnflow')
-    expect(wrapper.find('[data-lattice] svg').attributes('style')).toContain(
-      '--turn: 22.5deg'
-    )
-    expect(wrapper.find('[data-crumb]').text()).toBe('— WORK —')
+    expect(stage(wrapper)).toEqual({ turn: '22.5deg', crumb: '— WORK —' })
   })
 
   it('closes back to all work', async () => {
@@ -151,10 +157,7 @@ describe.each([
 
   it(`turns the lattice ${angle} and labels the breadcrumb`, async () => {
     const wrapper = await visit(route)
-    expect(wrapper.find('[data-lattice] svg').attributes('style')).toContain(
-      `--turn: ${angle}`
-    )
-    expect(wrapper.find('[data-crumb]').text()).toBe(crumb)
+    expect(stage(wrapper)).toEqual({ turn: angle, crumb })
   })
 })
 

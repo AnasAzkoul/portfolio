@@ -1,12 +1,14 @@
 <script setup lang="ts">
 /**
  * One project's case study, opened over the Work grid as its child route.
- * It inherits Work's lattice turn and breadcrumb through the route's meta,
- * so the lattice stays put when a project opens.
+ * It keeps Work's lattice turn and breadcrumb, so the lattice stays put when
+ * a project opens.
  *
  * An unknown slug goes back to /work.
  */
 definePageMeta({
+  turn: 1,
+  crumb: 'WORK',
   middleware: (to) => {
     if (!findProject(String(to.params.slug))) {
       return navigateTo('/work', { replace: true })

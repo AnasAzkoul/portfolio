@@ -6,6 +6,9 @@
  * It rises into place once, just after the first load, together with the
  * lattice. Coming back to Home later shows it at once.
  */
+// No crumb: the layout invites a choice instead.
+definePageMeta({ turn: 0 })
+
 const revealed = useState('home-revealed', () => false)
 let revealTimer: ReturnType<typeof setTimeout> | undefined
 onMounted(() => {

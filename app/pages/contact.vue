@@ -19,9 +19,10 @@ const channels: Channel[] = [
   { name: 'LinkedIn', todo: 'add profile' }
 ]
 
-const row =
+const rowClass =
   'flex justify-between gap-4 border-b border-gold/16 py-3.5 text-[20px] text-ink no-underline'
-const handle = 'self-center font-mono text-[11px] tracking-[2px] text-ink-dim'
+// The handle's type, without its colour: a draft note keeps its own.
+const handleType = 'self-center font-mono text-[11px] tracking-[2px]'
 </script>
 
 <template>
@@ -38,18 +39,18 @@ const handle = 'self-center font-mono text-[11px] tracking-[2px] text-ink-dim'
         :href="channel.href"
         target="_blank"
         rel="noopener"
-        :class="row"
+        :class="rowClass"
         class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-none"
       >
         {{ channel.name }}
-        <span :class="handle">{{ channel.handle }}</span>
+        <span :class="handleType" class="text-ink-dim">{{
+          channel.handle
+        }}</span>
         <span class="sr-only">, opens in a new tab</span>
       </a>
-      <div v-else data-contact :class="row">
+      <div v-else data-contact :class="rowClass">
         {{ channel.name }}
-        <DraftNote class="self-center font-mono text-[11px] tracking-[2px]">{{
-          channel.todo
-        }}</DraftNote>
+        <DraftNote :class="handleType">{{ channel.todo }}</DraftNote>
       </div>
     </template>
   </FramedPanel>

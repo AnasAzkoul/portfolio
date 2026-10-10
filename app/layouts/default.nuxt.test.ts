@@ -1,29 +1,7 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { h } from 'vue'
 import DefaultLayout from './default.vue'
-
-const Blank = { render: () => null }
-
-// The pages arrive with ANA-65; stand in for them with the meta they will set.
-beforeAll(() => {
-  const router = useRouter()
-  router.addRoute({
-    path: '/work',
-    component: Blank,
-    meta: { turn: 1, crumb: 'WORK' }
-  })
-  router.addRoute({
-    path: '/work/:slug',
-    component: Blank,
-    meta: { turn: 1, crumb: 'WORK' }
-  })
-  router.addRoute({
-    path: '/story',
-    component: Blank,
-    meta: { turn: 3, crumb: 'STORY' }
-  })
-})
 
 function mountAt(route: string) {
   return mountSuspended(DefaultLayout, {
