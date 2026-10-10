@@ -21,11 +21,33 @@ const areas = [
 ] as const
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
+
+// PROTOTYPE: Work layout variants, switched by `?variant=` in dev only.
+// The last one picked is remembered, so closing a project keeps it.
+const isDev = import.meta.dev
+const prototypeVariants = [
+  { key: 'A', name: 'Compass (current)' },
+  { key: 'B', name: 'Ledger' },
+  { key: 'C', name: 'Orbit' },
+  { key: 'D', name: 'Arcade' },
+  { key: 'E', name: 'Spotlight' }
+] as const
+const rememberedVariant = useState('prototype-work-variant', () => 'A')
+const variant = computed(() => {
+  if (!isDev) return 'A'
+  const asked = route.query.variant
+  return typeof asked === 'string' &&
+    prototypeVariants.some((v) => v.key === asked)
+    ? asked
+    : rememberedVariant.value
+})
+watch(variant, (v) => (rememberedVariant.value = v), { immediate: true })
 </script>
 
 <template>
   <div class="grid place-items-center *:[grid-area:1/1]">
     <div
+      v-if="variant === 'A'"
       data-work-grid
       class="grid grid-cols-[repeat(3,var(--c))] grid-rows-[repeat(3,var(--c))] gap-[18px] [--c:clamp(132px,21vh,190px)] [grid-template-areas:'._n_.'_'w_t_e'_'._s_.'] max-[720px]:grid-cols-[repeat(2,var(--c))] max-[720px]:grid-rows-[auto_var(--c)_var(--c)] max-[720px]:gap-3 max-[720px]:[--c:42vw] max-[720px]:[grid-template-areas:'t_t'_'n_e'_'w_s']"
       :class="{ invisible: projectOpen }"
@@ -56,6 +78,17 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
         :class="areas[i]"
       />
     </div>
+    <div v-else :class="{ invisible: projectOpen }" :inert="projectOpen">
+      <PrototypeWorkLedger v-if="variant === 'B'" />
+      <PrototypeWorkOrbit v-else-if="variant === 'C'" />
+      <PrototypeWorkArcade v-else-if="variant === 'D'" />
+      <PrototypeWorkSpotlight v-else-if="variant === 'E'" />
+    </div>
     <NuxtPage />
+    <PrototypeSwitcher
+      v-if="isDev"
+      :variants="prototypeVariants"
+      :current="variant"
+    />
   </div>
 </template>
