@@ -85,6 +85,15 @@ describe('work', () => {
     expect(preview.find('a').attributes('href')).toBe('/work/variant-system')
   })
 
+  it("sets the previewed project's jewel in an inlaid star by its kicker", async () => {
+    const wrapper = await visit('/work')
+    const star = () => wrapper.find('[data-work-preview] [data-inlaid-star]')
+    expect(star().attributes('aria-hidden')).toBe('true')
+    expect(star().find('[data-jewel]').classes()).toContain('fill-red')
+    await wrapper.findAll('[data-work-list] a')[3]!.trigger('mouseenter')
+    expect(star().find('[data-jewel]').classes()).toContain('fill-gold-hi')
+  })
+
   it('previews a project when the pointer moves onto it', async () => {
     const wrapper = await visit('/work')
     await wrapper.findAll('[data-work-list] a')[3]!.trigger('mouseenter')

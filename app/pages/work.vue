@@ -84,7 +84,10 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
           :class="framedPanel({ variant: 'fluid' })"
           class="px-9 py-8 max-[720px]:hidden"
         >
-          <div class="mb-2 font-mono text-[11px] tracking-[4px] text-gold-hi">
+          <div
+            class="mb-2.5 flex items-center gap-3 font-mono text-[11px] tracking-[4px] text-gold-hi"
+          >
+            <InlaidStar :jewel="preview.jewel" class="size-[26px]" />
             {{ preview.kicker }}
           </div>
           <h3 class="text-[clamp(30px,3.4vw,42px)] leading-none font-medium">

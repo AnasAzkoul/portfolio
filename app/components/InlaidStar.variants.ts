@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-/** The jewel dot set in the cartouche's star. */
-export const cartoucheJewel = cva('opacity-80', {
+/** The jewel accent set at the heart of the star. */
+export const inlaidStarJewel = cva('opacity-80', {
   variants: {
     jewel: {
       red: 'fill-red',
@@ -12,6 +12,4 @@ export const cartoucheJewel = cva('opacity-80', {
   }
 })
 
-export type CartoucheJewel = NonNullable<
-  VariantProps<typeof cartoucheJewel>['jewel']
->
+export type Jewel = NonNullable<VariantProps<typeof inlaidStarJewel>['jewel']>

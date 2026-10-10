@@ -1,4 +1,4 @@
-import type { CartoucheJewel } from '~/components/Cartouche.variants'
+import type { Jewel } from '~/components/InlaidStar.variants'
 
 /**
  * A passage of case-study copy. Drafts still carry a `todo`: what is left to
@@ -15,9 +15,10 @@ export interface Project {
   name: string
   /** Mono line above the title, e.g. "01 · QUINTET · SCALA". */
   kicker: string
-  /** Short mono stack line on the cartouche. */
+  /** Short mono stack line, e.g. "NUXT 4 · CLAUDE CODE". */
   meta: string
-  jewel: CartoucheJewel
+  /** Set in the inlaid star by the project's kicker. */
+  jewel: Jewel
   context: Passage
   problem: Passage
   did: Passage
