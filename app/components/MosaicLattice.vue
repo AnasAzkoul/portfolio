@@ -1,4 +1,9 @@
 <script setup lang="ts">
+const { turn = 0 } = defineProps<{
+  /** Which section the site is on (0–4); each one turns the lattice 22.5°. */
+  turn?: 0 | 1 | 2 | 3 | 4
+}>()
+
 const { rays, inner, mid, hotStars, rosette, pearls, border } = buildLattice()
 </script>
 
@@ -7,47 +12,78 @@ const { rays, inner, mid, hotStars, rosette, pearls, border } = buildLattice()
     viewBox="0 0 1000 1000"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
+    :style="{ '--turn': `${turn * 22.5}deg` }"
   >
-    <path v-for="(p, i) in rays" :key="`ray-${i}`" :d="p.d" :class="p.cls" />
-    <path v-for="(p, i) in inner" :key="`inner-${i}`" :d="p.d" :class="p.cls" />
-    <path v-for="(p, i) in mid" :key="`mid-${i}`" :d="p.d" :class="p.cls" />
-    <g v-for="(s, i) in hotStars" :key="`hot-${i}`" class="hot">
-      <circle :cx="s.hit.cx" :cy="s.hit.cy" :r="s.hit.r" :class="s.hit.cls" />
-      <path v-for="(p, j) in s.paths" :key="j" :d="p.d" :class="p.cls" />
-      <circle :cx="s.dot.cx" :cy="s.dot.cy" :r="s.dot.r" :class="s.dot.cls" />
+    <g class="spin">
+      <path v-for="(p, i) in rays" :key="`ray-${i}`" :d="p.d" :class="p.cls" />
+      <path
+        v-for="(p, i) in inner"
+        :key="`inner-${i}`"
+        :d="p.d"
+        :class="p.cls"
+      />
+      <path v-for="(p, i) in mid" :key="`mid-${i}`" :d="p.d" :class="p.cls" />
+      <g v-for="(s, i) in hotStars" :key="`hot-${i}`" class="hot">
+        <circle :cx="s.hit.cx" :cy="s.hit.cy" :r="s.hit.r" :class="s.hit.cls" />
+        <path v-for="(p, j) in s.paths" :key="j" :d="p.d" :class="p.cls" />
+        <circle :cx="s.dot.cx" :cy="s.dot.cy" :r="s.dot.r" :class="s.dot.cls" />
+      </g>
+      <path
+        v-for="(p, i) in rosette"
+        :key="`rosette-${i}`"
+        :d="p.d"
+        :class="p.cls"
+      />
+      <circle
+        v-for="(c, i) in pearls"
+        :key="`pearl-${i}`"
+        :cx="c.cx"
+        :cy="c.cy"
+        :r="c.r"
+        :class="c.cls"
+      />
+      <circle
+        v-for="c in border.rings"
+        :key="`ring-${c.r}`"
+        :cx="c.cx"
+        :cy="c.cy"
+        :r="c.r"
+        :class="c.cls"
+      />
+      <path
+        v-for="(p, i) in border.triangles"
+        :key="`tri-${i}`"
+        :d="p.d"
+        :class="p.cls"
+      />
     </g>
-    <path
-      v-for="(p, i) in rosette"
-      :key="`rosette-${i}`"
-      :d="p.d"
-      :class="p.cls"
-    />
-    <circle
-      v-for="(c, i) in pearls"
-      :key="`pearl-${i}`"
-      :cx="c.cx"
-      :cy="c.cy"
-      :r="c.r"
-      :class="c.cls"
-    />
-    <circle
-      v-for="c in border.rings"
-      :key="`ring-${c.r}`"
-      :cx="c.cx"
-      :cy="c.cy"
-      :r="c.r"
-      :class="c.cls"
-    />
-    <path
-      v-for="(p, i) in border.triangles"
-      :key="`tri-${i}`"
-      :d="p.d"
-      :class="p.cls"
-    />
   </svg>
 </template>
 
 <style scoped>
+svg {
+  transform: rotate(var(--turn));
+  transition: transform 1.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 200s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  svg {
+    transform: none;
+    transition: none;
+  }
+  .spin {
+    animation: none;
+  }
+}
 .g-line,
 .g-line2,
 .g-fine,
