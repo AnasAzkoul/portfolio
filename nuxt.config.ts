@@ -5,6 +5,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/fonts'],
+  // Only .vue files are components, so a `*.variants.ts` can sit beside its component.
+  components: [{ path: '~/components', extensions: ['.vue'] }],
   fonts: {
     // Downloaded at build time and served from our own origin.
     // No per-family `provider`: pinning one makes it ignore `defaults.fallbacks`.
