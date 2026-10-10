@@ -45,7 +45,7 @@ function onClick(event: MouseEvent) {
 <template>
   <NuxtLink
     :to="to"
-    class="group flex flex-col items-center justify-center gap-2 border border-gold/38 bg-panel p-3.5 text-center text-ink no-underline shadow-[inset_0_0_0_4px_var(--color-panel),inset_0_0_0_5px_--alpha(var(--color-gold)/16%)] transition-[border-color,box-shadow] duration-350 hover:border-gold-hi/80 hover:shadow-[inset_0_0_0_4px_var(--color-panel),inset_0_0_0_5px_--alpha(var(--color-gold-hi)/40%),0_0_12px_--alpha(var(--color-gold-hi)/18%)] focus-visible:border-gold-hi/80 focus-visible:shadow-[inset_0_0_0_4px_var(--color-panel),inset_0_0_0_5px_--alpha(var(--color-gold-hi)/40%),0_0_12px_--alpha(var(--color-gold-hi)/18%)] focus-visible:outline-none"
+    class="group flex flex-col items-center justify-center gap-2 border border-gold/38 bg-tile p-3.5 text-center text-ink no-underline shadow-[inset_0_0_0_4px_var(--color-tile),inset_0_0_0_5px_--alpha(var(--color-gold)/16%)] transition-[border-color,box-shadow] duration-350 hover:border-gold-hi/80 hover:shadow-[inset_0_0_0_4px_var(--color-tile),inset_0_0_0_5px_--alpha(var(--color-gold-hi)/40%),0_0_12px_--alpha(var(--color-gold-hi)/18%)] focus-visible:border-gold-hi/80 focus-visible:shadow-[inset_0_0_0_4px_var(--color-tile),inset_0_0_0_5px_--alpha(var(--color-gold-hi)/40%),0_0_12px_--alpha(var(--color-gold-hi)/18%)] focus-visible:outline-none"
     @click="onClick"
   >
     <span

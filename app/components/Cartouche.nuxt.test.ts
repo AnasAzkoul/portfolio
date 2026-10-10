@@ -16,6 +16,11 @@ describe('Cartouche', () => {
     expect(wrapper.find('a').attributes('href')).toBe('/work/learnflow')
   })
 
+  it('sits on the lighter tile background, not the panel one', async () => {
+    const wrapper = await mountSuspended(Cartouche, { props })
+    expect(wrapper.find('a').classes()).toContain('bg-tile')
+  })
+
   it('shows the number, the project name and the stack meta line', async () => {
     const wrapper = await mountSuspended(Cartouche, { props })
     expect(wrapper.find('[data-cartouche-number]').text()).toBe('01')
