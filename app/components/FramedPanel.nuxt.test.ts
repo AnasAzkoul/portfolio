@@ -70,7 +70,8 @@ describe('FramedPanel', () => {
   it.each([
     [undefined, 'w-[min(760px,92vw)]'],
     ['default', 'w-[min(760px,92vw)]'],
-    ['narrow', 'w-[min(560px,92vw)]']
+    ['narrow', 'w-[min(560px,92vw)]'],
+    ['fluid', 'w-full']
   ] as const)('variant %s is %s wide', async (variant, width) => {
     const wrapper = await mountSuspended(FramedPanel, {
       props: { ...props, variant }

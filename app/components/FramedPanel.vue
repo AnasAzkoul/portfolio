@@ -24,7 +24,7 @@ const { closeLabel = 'Close', variant = 'default' } = defineProps<{
   closeTo: RouteLocationRaw
   /** Accessible name for the close link. */
   closeLabel?: string
-  /** `default` is 760px wide, `narrow` 560px. */
+  /** `default` is 760px wide, `narrow` 560px; `fluid` fills its container. */
   variant?: FramedPanelVariants['variant']
 }>()
 

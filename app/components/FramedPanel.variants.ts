@@ -11,7 +11,8 @@ export const framedPanel = cva(
     variants: {
       variant: {
         default: 'w-[min(760px,92vw)]',
-        narrow: 'w-[min(560px,92vw)]'
+        narrow: 'w-[min(560px,92vw)]',
+        fluid: 'w-full'
       }
     },
     defaultVariants: { variant: 'default' }

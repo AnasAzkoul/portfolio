@@ -53,13 +53,13 @@ describe('home', () => {
 })
 
 describe('work', () => {
-  it('sets a cartouche for each project around the title', async () => {
+  it('lists each project under the title, linking to its case study', async () => {
     const wrapper = await visit('/work')
     expect(wrapper.find('[data-view-area] h2').text()).toBe('Selected Work')
-    const cartouches = wrapper.findAll('[data-work-grid] a')
+    const links = wrapper.findAll('[data-work-list] a')
     expect(
-      cartouches.map((a) => [
-        a.find('[data-cartouche-name]').text(),
+      links.map((a) => [
+        a.find('[data-project-name]').text(),
         a.attributes('href')
       ])
     ).toEqual([
@@ -70,25 +70,70 @@ describe('work', () => {
     ])
   })
 
+  it('previews the first project until another is picked', async () => {
+    const wrapper = await visit('/work')
+    const preview = wrapper.find('[data-work-preview]')
+    expect(preview.find('h3').text()).toBe('Variant System')
+    expect(preview.text()).toContain('01 · QUINTET · SCALA')
+    expect(preview.text()).toContain("Quintet is Scala's menu-board platform")
+    expect(preview.findAll('[data-chip]').map((c) => c.text())).toEqual([
+      'Vue 3',
+      'Nuxt',
+      'TypeScript',
+      'CVA'
+    ])
+    expect(preview.find('a').attributes('href')).toBe('/work/variant-system')
+  })
+
+  it('previews a project when the pointer moves onto it', async () => {
+    const wrapper = await visit('/work')
+    await wrapper.findAll('[data-work-list] a')[3]!.trigger('mouseenter')
+    const preview = wrapper.find('[data-work-preview]')
+    expect(preview.find('h3').text()).toBe('LearnFlow')
+    expect(preview.find('a').attributes('href')).toBe('/work/learnflow')
+  })
+
+  it('previews a project when it takes keyboard focus', async () => {
+    const wrapper = await visit('/work')
+    await wrapper.findAll('[data-work-list] a')[2]!.trigger('focus')
+    expect(wrapper.find('[data-work-preview] h3').text()).toBe(
+      'White-label Terminals'
+    )
+  })
+
+  it('marks the previewed project in the list', async () => {
+    const wrapper = await visit('/work')
+    const links = wrapper.findAll('[data-work-list] a')
+    await links[1]!.trigger('mouseenter')
+    expect(links.map((a) => a.attributes('data-previewed'))).toEqual([
+      undefined,
+      '',
+      undefined,
+      undefined
+    ])
+  })
+
   it('turns the lattice one step and labels the breadcrumb', async () => {
     const wrapper = await visit('/work')
     expect(stage(wrapper)).toEqual({ turn: '22.5deg', crumb: '— WORK —' })
   })
 
-  it('leaves the grid open while no project is', async () => {
+  it('leaves the index open while no project is', async () => {
     const wrapper = await visit('/work')
-    expect(wrapper.find('[data-work-grid]').attributes('inert')).toBeUndefined()
+    expect(
+      wrapper.find('[data-work-index]').attributes('inert')
+    ).toBeUndefined()
     expect(wrapper.find('section').exists()).toBe(false)
   })
 })
 
 describe('a project', () => {
-  it('opens in a panel over the grid, which stays mounted but inert', async () => {
+  it('opens in a panel over the index, which stays mounted but inert', async () => {
     const wrapper = await visit('/work/variant-system')
     const panel = wrapper.find('section')
     expect(panel.find('h2').text()).toBe('Variant System')
     expect(panel.find('header').text()).toContain('01 · QUINTET · SCALA')
-    expect(wrapper.find('[data-work-grid]').attributes('inert')).toBeDefined()
+    expect(wrapper.find('[data-work-index]').attributes('inert')).toBeDefined()
   })
 
   it('tells the case study in fixed sections, then lists its stack', async () => {
@@ -132,7 +177,9 @@ describe('a project', () => {
     const wrapper = await visit('/work/no-such-project')
     expect(useRouter().currentRoute.value.fullPath).toBe('/work')
     expect(wrapper.find('section').exists()).toBe(false)
-    expect(wrapper.find('[data-work-grid]').attributes('inert')).toBeUndefined()
+    expect(
+      wrapper.find('[data-work-index]').attributes('inert')
+    ).toBeUndefined()
   })
 })
 

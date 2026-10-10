@@ -1,24 +1,23 @@
 <script setup lang="ts">
 /**
- * Work: a cartouche for each project, set around the title like the points
- * of a compass (two-by-two under the title on a phone).
+ * Work: an index of the projects beside a framed preview of the one under
+ * the pointer or keyboard focus (the first until then). The preview shows
+ * its kicker, name, context and stack, so a visitor can read before opening
+ * the case study. On a phone it's the index alone.
  *
- * A project opens as the child route /work/<slug>, over the grid. The grid
- * stays mounted underneath, hidden and inert, so the panel can later grow
- * from the clicked cartouche and close back into it.
+ * A project opens as the child route /work/<slug>, over the index. The
+ * index stays mounted underneath, hidden and inert, so it keeps the
+ * previewed project for when the case study closes.
  */
+import { framedPanel } from '~/components/FramedPanel.variants'
+
 definePageMeta({ turn: 1, crumb: 'WORK' })
 
 const route = useRoute()
 const projectOpen = computed(() => route.params.slug !== undefined)
 
-// Clockwise from the top: north, east, south, west.
-const areas = [
-  '[grid-area:n]',
-  '[grid-area:e]',
-  '[grid-area:s]',
-  '[grid-area:w]'
-] as const
+const previewed = ref(0)
+const preview = computed(() => projects[previewed.value]!)
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
 </script>
@@ -26,35 +25,90 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
 <template>
   <div class="grid place-items-center *:[grid-area:1/1]">
     <div
-      data-work-grid
-      class="grid grid-cols-[repeat(3,var(--c))] grid-rows-[repeat(3,var(--c))] gap-[18px] [--c:clamp(132px,21vh,190px)] [grid-template-areas:'._n_.'_'w_t_e'_'._s_.'] max-[720px]:grid-cols-[repeat(2,var(--c))] max-[720px]:grid-rows-[auto_var(--c)_var(--c)] max-[720px]:gap-3 max-[720px]:[--c:42vw] max-[720px]:[grid-template-areas:'t_t'_'n_e'_'w_s']"
+      data-work-index
+      class="grid w-[min(1000px,94vw)] grid-cols-[minmax(0,330px)_1fr] items-center gap-12 max-[720px]:grid-cols-1"
       :class="{ invisible: projectOpen }"
       :inert="projectOpen"
     >
-      <div
-        class="flex flex-col items-center justify-center text-center [grid-area:t]"
-      >
+      <div>
+        <div class="mb-2 font-mono text-[11px] tracking-[4px] text-gold-hi">
+          01 · SELECTED WORK
+        </div>
         <h2
           tabindex="-1"
-          class="text-[clamp(24px,3vw,32px)] leading-none font-medium focus:outline-none"
+          class="text-[clamp(32px,4vw,44px)] leading-none font-medium focus:outline-none"
         >
           Selected Work
         </h2>
-        <DiamondDivider size="small" class="mx-auto mt-3 mb-2.5" />
-        <div class="font-mono text-[10px] tracking-[3px] text-ink-dim">
-          {{ twoDigits(projects.length) }} PROJECTS
-        </div>
+        <ol data-work-list class="mt-7 border-t border-gold/18">
+          <li v-for="(project, i) in projects" :key="project.slug">
+            <NuxtLink
+              :to="`/work/${project.slug}`"
+              :data-previewed="i === previewed ? '' : undefined"
+              class="flex items-baseline gap-4 border-b border-gold/18 py-4 no-underline transition-colors duration-300 focus-visible:outline-none"
+              :class="
+                i === previewed ? 'text-gold-hi' : 'text-ink-dim hover:text-ink'
+              "
+              @mouseenter="previewed = i"
+              @focus="previewed = i"
+            >
+              <span class="font-mono text-[10px] tracking-[2px] text-gold">
+                {{ twoDigits(i + 1) }}
+              </span>
+              <span
+                data-project-name
+                class="text-[clamp(20px,2.2vw,25px)] leading-none font-medium"
+              >
+                {{ project.name }}
+              </span>
+              <span
+                aria-hidden="true"
+                class="ml-auto size-[7px] shrink-0 rotate-45 border border-gold-hi transition-opacity duration-300"
+                :class="i === previewed ? 'opacity-100' : 'opacity-0'"
+              />
+            </NuxtLink>
+          </li>
+        </ol>
       </div>
-      <Cartouche
-        v-for="(project, i) in projects"
-        :key="project.slug"
-        :number="twoDigits(i + 1)"
-        :name="project.name"
-        :meta="project.meta"
-        :to="`/work/${project.slug}`"
-        :jewel="project.jewel"
-        :class="areas[i]"
-      />
+
+      <Transition
+        mode="out-in"
+        enter-from-class="translate-y-1 opacity-0"
+        leave-to-class="opacity-0"
+        enter-active-class="transition-[opacity,translate] duration-300 motion-reduce:transition-none"
+        leave-active-class="transition-opacity duration-150 motion-reduce:transition-none"
+      >
+        <article
+          :key="preview.slug"
+          data-work-preview
+          :class="framedPanel({ variant: 'fluid' })"
+          class="px-9 py-8 max-[720px]:hidden"
+        >
+          <div class="mb-2 font-mono text-[11px] tracking-[4px] text-gold-hi">
+            {{ preview.kicker }}
+          </div>
+          <h3 class="text-[clamp(30px,3.4vw,42px)] leading-none font-medium">
+            {{ preview.name }}
+          </h3>
+          <p class="mt-5 text-[19px] leading-[1.55] text-ink">
+            {{ preview.context.text }}
+            <DraftNote v-if="preview.context.todo">
+              {{ preview.context.todo }}
+            </DraftNote>
+          </p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <Chip v-for="item in preview.stack" :key="item">{{ item }}</Chip>
+          </div>
+          <!-- Out of the tab order: the index link above already opens it. -->
+          <NuxtLink
+            :to="`/work/${preview.slug}`"
+            tabindex="-1"
+            class="mt-7 inline-block border border-gold/45 px-3.5 py-2 font-mono text-[11px] tracking-[3px] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi"
+          >
+            OPEN CASE STUDY →
+          </NuxtLink>
+        </article>
+      </Transition>
     </div>
     <NuxtPage />
   </div>
