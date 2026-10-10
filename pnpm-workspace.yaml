@@ -1,2 +1,6 @@
 allowBuilds:
   esbuild: true
+  # Hooks are installed via the `prepare` script instead.
+  simple-git-hooks: false
+  # Ships prebuilt binaries as optional deps; the postinstall is only a fallback.
+  unrs-resolver: false
