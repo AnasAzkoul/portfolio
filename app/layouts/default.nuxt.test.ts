@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { h } from 'vue'
 import DefaultLayout from './default.vue'
@@ -55,6 +55,20 @@ describe('default layout', () => {
       expect(el.exists()).toBe(true)
       expect(el.attributes('aria-hidden')).toBe('true')
     }
+  })
+
+  it('sizes the lattice to 150% of the screen height, but no wider than the screen', async () => {
+    const wrapper = await mountAt('/')
+    expect(wrapper.find('[data-lattice] svg').classes()).toContain(
+      'size-[min(150dvh,100vw)]'
+    )
+  })
+
+  it('fades the lattice in shortly after it mounts', async () => {
+    const wrapper = await mountAt('/')
+    const lattice = wrapper.find('[data-lattice]')
+    expect(lattice.classes()).toContain('opacity-0')
+    await vi.waitFor(() => expect(lattice.classes()).not.toContain('opacity-0'))
   })
 
   it.each([

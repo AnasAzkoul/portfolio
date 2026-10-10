@@ -26,6 +26,15 @@ const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
 const crumbText = computed(
   () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`
 )
+
+// The lattice fades in once, just after the first load; the layout then
+// stays mounted across routes, so it never fades again.
+const latticeRevealed = ref(false)
+let revealTimer: ReturnType<typeof setTimeout> | undefined
+onMounted(() => {
+  revealTimer = setTimeout(() => (latticeRevealed.value = true), 180)
+})
+onBeforeUnmount(() => clearTimeout(revealTimer))
 </script>
 
 <template>
@@ -34,12 +43,12 @@ const crumbText = computed(
   >
     <div
       data-lattice
-      class="absolute inset-0 z-0 flex items-center justify-center"
+      class="absolute inset-0 z-0 flex items-center justify-center [transition:opacity_1.6s_ease,scale_2s_ease] motion-reduce:scale-100 motion-reduce:opacity-100 motion-reduce:transition-none"
+      :class="{ 'scale-[0.985] opacity-0': !latticeRevealed }"
     >
-      <MosaicLattice
-        :turn="route.meta.turn"
-        class="size-[min(150dvh,150vw)] shrink-0"
-      />
+      <!-- 150% of the screen height, but never wider than the screen, as in
+           the prototype: on a phone it spans the width instead of overflowing. -->
+      <MosaicLattice :turn="route.meta.turn" class="size-[min(150dvh,100vw)]" />
     </div>
     <div
       data-overlay="glow"
@@ -76,7 +85,7 @@ const crumbText = computed(
         :key="section.to"
         :to="section.to"
         :aria-current="currentSectionPath === section.to ? 'page' : undefined"
-        class="relative text-xs tracking-[3px] text-ink-dim no-underline transition-colors duration-200 hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
+        class="relative text-[12px] tracking-[3px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
       >
         {{ section.label }}
       </NuxtLink>
