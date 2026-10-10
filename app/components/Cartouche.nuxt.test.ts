@@ -54,4 +54,16 @@ describe('Cartouche', () => {
     await link.trigger('click')
     expect(wrapper.emitted('open')).toEqual([[{ x: 195, y: 135 }]])
   })
+
+  it.each([
+    ['meta', { metaKey: true }],
+    ['ctrl', { ctrlKey: true }],
+    ['shift', { shiftKey: true }],
+    ['alt', { altKey: true }],
+    ['middle-button', { button: 1 }]
+  ])("doesn't emit on a %s click, which opens elsewhere", async (_, init) => {
+    const wrapper = await mountSuspended(Cartouche, { props })
+    await wrapper.find('a').trigger('click', init)
+    expect(wrapper.emitted('open')).toBeUndefined()
+  })
 })

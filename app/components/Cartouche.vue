@@ -31,8 +31,14 @@ const emit = defineEmits<{ open: [centre: { x: number; y: number }] }>()
 const starPath = star(17, 17, 15, 8.5, 8, -Math.PI / 2)
 
 function onClick(event: MouseEvent) {
-  const r = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  emit('open', { x: r.left + r.width / 2, y: r.top + r.height / 2 })
+  // A modified click opens the project in a new tab or window: no panel grows here.
+  const { metaKey, ctrlKey, shiftKey, altKey, button } = event
+  if (metaKey || ctrlKey || shiftKey || altKey || button !== 0) return
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  emit('open', {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  })
 }
 </script>
 
