@@ -17,6 +17,9 @@
   --color-red: #a5342b; /* madder */
   --color-green: #3f6b53; /* jade */
 
+  /* Notes marking draft copy still to be written; all gone before launch. */
+  --color-draft: #e3907f;
+
   --color-ink: #efe6d2;
   /* Just passes WCAG AA on bg1 (~5.0:1): don't make it dimmer. */
   --color-ink-dim: rgba(239, 230, 210, 0.55);

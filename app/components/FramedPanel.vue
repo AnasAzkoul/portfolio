@@ -8,6 +8,9 @@
  *     ...body content; it scrolls inside the frame...
  *   </FramedPanel>
  *
+ * The body sets its own `h3` (mono gold section labels) and `p` (reading
+ * copy) styles, so content can use plain elements.
+ *
  * The title has tabindex="-1" so the view can move focus to it on open.
  */
 import type { RouteLocationRaw } from 'vue-router'
@@ -71,7 +74,7 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
     </header>
     <div
       data-panel-body
-      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px]"
+      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-mono [&_h3]:text-[11px] [&_h3]:font-normal [&_h3]:tracking-[4px] [&_h3]:text-gold [&_h3]:uppercase [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
     >
       <slot />
     </div>
