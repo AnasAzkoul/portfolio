@@ -46,9 +46,13 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       class="absolute inset-0 z-0 flex items-center justify-center [transition:opacity_1.6s_ease,scale_2s_ease] motion-reduce:scale-100 motion-reduce:opacity-100 motion-reduce:transition-none"
       :class="{ 'scale-[0.985] opacity-0': !latticeRevealed }"
     >
-      <!-- 150% of the screen height, but never wider than the screen, as in
-           the prototype: on a phone it spans the width instead of overflowing. -->
-      <MosaicLattice :turn="route.meta.turn" class="size-[min(150dvh,100vw)]" />
+      <!-- The whole circle is always on screen (the prototype drew it at 150%
+           of the height and cropped the ring). 96px of height is kept for the
+           mark, nav and breadcrumb, so the ring never runs under them. -->
+      <MosaicLattice
+        :turn="route.meta.turn"
+        class="size-[min(100dvh_-_96px,100vw)]"
+      />
     </div>
     <div
       data-overlay="glow"

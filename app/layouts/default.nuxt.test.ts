@@ -57,10 +57,10 @@ describe('default layout', () => {
     }
   })
 
-  it('sizes the lattice to 150% of the screen height, but no wider than the screen', async () => {
+  it('fits the whole lattice on screen, clear of the top and bottom chrome', async () => {
     const wrapper = await mountAt('/')
     expect(wrapper.find('[data-lattice] svg').classes()).toContain(
-      'size-[min(150dvh,100vw)]'
+      'size-[min(100dvh_-_96px,100vw)]'
     )
   })
 
