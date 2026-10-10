@@ -1,8 +1,40 @@
 import { describe, expect, it } from 'vitest'
-import { buildLattice } from './lattice'
+import { buildLattice, type Lattice } from './lattice'
+import prototype from './prototype-lattice.fixture.json'
+
+/** The lattice as one flat list in paint order, hot stars nested as groups. */
+function flatten(l: Lattice) {
+  const round = (n: number) => +n.toFixed(2)
+  const circle = (c: { cx: number; cy: number; r: number; cls: string }) => ({
+    cx: round(c.cx),
+    cy: round(c.cy),
+    r: c.r,
+    cls: c.cls
+  })
+  return [
+    ...l.rays,
+    ...l.inner,
+    ...l.mid,
+    ...l.hotStars.map((s) => ({
+      g: 'hot',
+      kids: [circle(s.hit), ...s.paths, circle(s.dot)]
+    })),
+    ...l.rosette,
+    ...l.pearls.map(circle),
+    ...l.border.rings.map(circle),
+    ...l.border.triangles
+  ]
+}
 
 describe('buildLattice', () => {
   const lattice = buildLattice()
+
+  // Golden file: the shapes the prototype's imperative generator emitted
+  // (docs/prototype/damascus-onepager.html), in paint order. Guards every
+  // path, radius, rotation and class against drift.
+  it('matches the prototype generator shape for shape', () => {
+    expect(flatten(lattice)).toEqual(prototype)
+  })
 
   it('radiates 16 lines from the inner ring to the border', () => {
     expect(lattice.rays).toHaveLength(16)

@@ -3,12 +3,33 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import MosaicLattice from './MosaicLattice.vue'
 
 describe('MosaicLattice', () => {
-  it('renders every layer declaratively', async () => {
+  it('renders every lattice shape into the SVG', async () => {
+    const lattice = buildLattice()
     const wrapper = await mountSuspended(MosaicLattice)
-    expect(wrapper.findAll('g.hot')).toHaveLength(8)
-    // 16 rays + 3 inner + 3 mid + 16 hot + 2 rosette + 56 triangles
-    expect(wrapper.findAll('path')).toHaveLength(16 + 3 + 3 + 16 + 2 + 56)
-    // 8 hit + 8 dots + 16 pearls + 2 rings
-    expect(wrapper.findAll('circle')).toHaveLength(8 + 8 + 16 + 2)
+
+    const paths = [
+      ...lattice.rays,
+      ...lattice.inner,
+      ...lattice.mid,
+      ...lattice.hotStars.flatMap((s) => s.paths),
+      ...lattice.rosette,
+      ...lattice.border.triangles
+    ]
+    expect(wrapper.findAll('path').map((p) => p.attributes('d'))).toEqual(
+      paths.map((p) => p.d)
+    )
+
+    const circles = [
+      ...lattice.hotStars.flatMap((s) => [s.hit, s.dot]),
+      ...lattice.pearls,
+      ...lattice.border.rings
+    ]
+    expect(wrapper.findAll('circle')).toHaveLength(circles.length)
+    expect(wrapper.findAll('g.hot')).toHaveLength(lattice.hotStars.length)
+  })
+
+  it('is decorative: hidden from assistive tech', async () => {
+    const wrapper = await mountSuspended(MosaicLattice)
+    expect(wrapper.find('svg').attributes('aria-hidden')).toBe('true')
   })
 })
