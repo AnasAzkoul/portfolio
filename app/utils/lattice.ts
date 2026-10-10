@@ -26,7 +26,6 @@ export interface Lattice {
   inner: LatticePath[]
   mid: LatticePath[]
   hotStars: HotStar[]
-  rosette: LatticePath[]
   pearls: LatticeCircle[]
   border: { rings: LatticeCircle[]; triangles: LatticePath[] }
 }
@@ -95,16 +94,11 @@ export function buildLattice(): Lattice {
       { d: star(C, C, 152, 94, 16, 0), cls: 'g-line' },
       { d: girih(C, C, 120, 8, 3, EIGHTH), cls: 'g-fine' }
     ],
-    mid: [
-      { d: poly(C, C, 252, 8, EIGHTH), cls: 'g-line' },
-      { d: girih(C, C, 252, 8, 2, 0), cls: 'g-fine' },
-      { d: girih(C, C, 252, 8, 3, EIGHTH), cls: 'g-fine' }
-    ],
+    // Only the octagon joining the hot stars. The prototype also drew lines
+    // across it from star to star, and an outer rosette beyond the stars;
+    // they made the centre too busy, so they're gone.
+    mid: [{ d: poly(C, C, 252, 8, EIGHTH), cls: 'g-line' }],
     hotStars: hotStars(),
-    rosette: [
-      { d: star(C, C, 362, 252, 16, Math.PI / 16), cls: 'g-line' },
-      { d: girih(C, C, 362, 16, 6, Math.PI / 16), cls: 'g-fine' }
-    ],
     pearls: Array.from({ length: 16 }, (_, t) =>
       circle(pt(152, t * EIGHTH), 2.1, 'acc-prl')
     ),

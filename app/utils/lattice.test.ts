@@ -1,6 +1,19 @@
 import { describe, expect, it } from 'vitest'
+import { CENTER as C, girih, star } from './geometry'
 import { buildLattice, type Lattice } from './lattice'
 import prototype from './prototype-lattice.fixture.json'
+
+// Lines the prototype drew that we took out on purpose: they crossed the
+// centre between the hot stars and made it look crowded.
+const REMOVED_FROM_PROTOTYPE = [
+  // Star-to-star lines: each hot star joined to the one three places over.
+  girih(C, C, 252, 8, 3, Math.PI / 8),
+  // Two overlapping squares, their corners between the hot stars.
+  girih(C, C, 252, 8, 2, 0),
+  // The outer rosette: a big 16-point star and its long interlace.
+  star(C, C, 362, 252, 16, Math.PI / 16),
+  girih(C, C, 362, 16, 6, Math.PI / 16)
+]
 
 /** The lattice as one flat list in paint order, hot stars nested as groups. */
 function flatten(l: Lattice) {
@@ -19,7 +32,6 @@ function flatten(l: Lattice) {
       g: 'hot',
       kids: [circle(s.hit), ...s.paths, circle(s.dot)]
     })),
-    ...l.rosette,
     ...l.pearls.map(circle),
     ...l.border.rings.map(circle),
     ...l.border.triangles
@@ -32,8 +44,14 @@ describe('buildLattice', () => {
   // Golden file: the shapes the prototype's imperative generator emitted
   // (docs/prototype/damascus-onepager.html), in paint order. Guards every
   // path, radius, rotation and class against drift.
-  it('matches the prototype generator shape for shape', () => {
-    expect(flatten(lattice)).toEqual(prototype)
+  it('matches the prototype generator shape for shape, minus the removed lines', () => {
+    const kept = prototype.filter(
+      (shape) =>
+        !REMOVED_FROM_PROTOTYPE.some((d) => 'd' in shape && shape.d === d)
+    )
+    // Every removed line really was in the prototype.
+    expect(prototype.length - kept.length).toBe(REMOVED_FROM_PROTOTYPE.length)
+    expect(flatten(lattice)).toEqual(kept)
   })
 
   it('radiates 16 lines from the inner ring to the border', () => {
@@ -52,12 +70,8 @@ describe('buildLattice', () => {
     ])
   })
 
-  it('has a mid octagon with its two interlaces', () => {
-    expect(lattice.mid.map((p) => p.cls)).toEqual([
-      'g-line',
-      'g-fine',
-      'g-fine'
-    ])
+  it('has a mid octagon joining the hot stars, and nothing across it', () => {
+    expect(lattice.mid.map((p) => p.cls)).toEqual(['g-line'])
   })
 
   it('sets eight hot stars on the octagon, cycling the jewel accents', () => {
@@ -75,10 +89,6 @@ describe('buildLattice', () => {
     const { hit } = lattice.hotStars[0]!
     expect(Math.hypot(hit.cx - 500, hit.cy - 500)).toBeCloseTo(252)
     expect(hit.r).toBe(50)
-  })
-
-  it('has an outer rosette of a star and an interlace', () => {
-    expect(lattice.rosette).toHaveLength(2)
   })
 
   it('places 16 pearl dots on the inner star tips', () => {

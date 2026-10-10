@@ -12,7 +12,6 @@ describe('MosaicLattice', () => {
       ...lattice.inner,
       ...lattice.mid,
       ...lattice.hotStars.flatMap((s) => s.paths),
-      ...lattice.rosette,
       ...lattice.border.triangles
     ]
     expect(wrapper.findAll('path').map((p) => p.attributes('d'))).toEqual(

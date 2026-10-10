@@ -6,7 +6,7 @@ const { turn = 0 } = defineProps<{
   turn?: LatticeTurn
 }>()
 
-const { rays, inner, mid, hotStars, rosette, pearls, border } = buildLattice()
+const { rays, inner, mid, hotStars, pearls, border } = buildLattice()
 </script>
 
 <template>
@@ -30,12 +30,6 @@ const { rays, inner, mid, hotStars, rosette, pearls, border } = buildLattice()
         <path v-for="(p, j) in s.paths" :key="j" :d="p.d" :class="p.cls" />
         <circle :cx="s.dot.cx" :cy="s.dot.cy" :r="s.dot.r" :class="s.dot.cls" />
       </g>
-      <path
-        v-for="(p, i) in rosette"
-        :key="`rosette-${i}`"
-        :d="p.d"
-        :class="p.cls"
-      />
       <circle
         v-for="(c, i) in pearls"
         :key="`pearl-${i}`"
