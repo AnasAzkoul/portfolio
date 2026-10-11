@@ -10,6 +10,8 @@
  * The view area centres the page and lets clicks through to the lattice's
  * stars; only the page's root element takes pointer events.
  */
+import { prototypeSections } from '~/components/prototype/menu-sections'
+
 defineSlots<{ default?: () => unknown }>()
 
 const sections = [
@@ -20,6 +22,44 @@ const sections = [
 ] as const
 
 const route = useRoute()
+
+// PROTOTYPE: phone-menu variants below 900px, switched by `?variant=` in
+// dev only. The last one picked is remembered across navigation.
+const prototyping = import.meta.dev
+const menuVariants = [
+  { key: 'A', name: 'Index' },
+  { key: 'B', name: 'Dropdown' },
+  { key: 'C', name: 'Sheet' },
+  { key: 'E', name: 'Star index' }
+] as const
+const isMenuVariant = (key: unknown): key is string =>
+  typeof key === 'string' && menuVariants.some((v) => v.key === key)
+const rememberedMenuVariant = useState('prototype-menu-variant', () => 'A')
+const menuVariant = computed(() => {
+  if (!prototyping) return 'A'
+  const asked = route.query.variant
+  if (isMenuVariant(asked)) return asked
+  return isMenuVariant(rememberedMenuVariant.value)
+    ? rememberedMenuVariant.value
+    : 'A'
+})
+watch(menuVariant, (v) => (rememberedMenuVariant.value = v), {
+  immediate: true
+})
+const navSections: readonly { label: string; to: string }[] = prototyping
+  ? prototypeSections
+  : sections
+// With the menu up top (A, B, E) the phone no longer needs room at the
+// bottom; the sheet's button (C) keeps today's room.
+const viewAreaPhoneBottom = computed(() =>
+  prototyping && menuVariant.value !== 'C'
+    ? 'max-[720px]:pb-6'
+    : 'max-[720px]:pb-16'
+)
+// C takes the bottom edge, so the breadcrumb goes below 900px.
+const crumbHiddenBelow900 = computed(
+  () => prototyping && menuVariant.value === 'C'
+)
 
 // A project under /work/… still counts as being on Work.
 const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
@@ -67,10 +107,28 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
 
     <div
       data-view-area
-      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-16"
+      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px]"
+      :class="viewAreaPhoneBottom"
     >
       <slot />
     </div>
+
+    <!-- PROTOTYPE: before the mark, so the mark stays above a menu's scrim. -->
+    <template v-if="prototyping">
+      <PrototypeMenuIndex
+        v-if="menuVariant === 'A'"
+        :current="currentSectionPath"
+      />
+      <PrototypeMenuDropdown
+        v-else-if="menuVariant === 'B'"
+        :current="currentSectionPath"
+      />
+      <PrototypeMenuSheet
+        v-else-if="menuVariant === 'C'"
+        :current="currentSectionPath"
+      />
+      <PrototypeMenuStarIndex v-else :current="currentSectionPath" />
+    </template>
 
     <NuxtLink
       data-mark
@@ -83,9 +141,10 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     <nav
       aria-label="Sections"
       class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[720px]:top-auto max-[720px]:right-1/2 max-[720px]:bottom-[22px] max-[720px]:translate-x-1/2 max-[720px]:gap-[18px]"
+      :class="{ 'max-[900px]:hidden': prototyping }"
     >
       <NuxtLink
-        v-for="section in sections"
+        v-for="section in navSections"
         :key="section.to"
         :to="section.to"
         :aria-current="currentSectionPath === section.to ? 'page' : undefined"
@@ -99,8 +158,15 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       data-crumb
       aria-hidden="true"
       class="absolute bottom-[30px] left-1/2 z-3 -translate-x-1/2 font-mono text-[11px] tracking-[4px] whitespace-nowrap text-ink-dim opacity-60 max-[720px]:hidden"
+      :class="{ 'max-[900px]:hidden': crumbHiddenBelow900 }"
     >
       {{ crumbText }}
     </div>
+
+    <PrototypeSwitcher
+      v-if="prototyping"
+      :variants="menuVariants"
+      :current="menuVariant"
+    />
   </div>
 </template>
