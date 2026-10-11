@@ -91,8 +91,7 @@ const nextStep =
       class="mx-auto mt-3 max-w-[44ch] text-[clamp(16px,1.9vw,19px)] leading-[1.4] text-balance text-ink delay-[860ms]"
       :class="reveal"
     >
-      Building production Nuxt apps at Scala. Open to frontend roles in the
-      Netherlands.
+      Open to frontend roles in the Netherlands.
     </p>
     <!-- The wrapper rises in with the rest; the links keep their own quick
          hover transition, free of the reveal's delay. -->

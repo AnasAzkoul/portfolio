@@ -48,7 +48,7 @@ describe('home', () => {
   it('says what work you want, and links to the projects', async () => {
     const wrapper = await visit('/')
     expect(wrapper.find('[data-availability]').text()).toBe(
-      'Building production Nuxt apps at Scala. Open to frontend roles in the Netherlands.'
+      'Open to frontend roles in the Netherlands.'
     )
     const cta = wrapper.find('[data-home-cta]')
     expect(cta.text()).toBe('See projects')
