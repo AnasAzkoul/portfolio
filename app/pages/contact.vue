@@ -44,7 +44,7 @@ const handleType = 'self-center font-mono text-[12px] tracking-[1px]'
       >
         {{ channel.name }}
         <span :class="handleType" class="text-ink-dim">
-          {{ channel.handle }} <span aria-hidden="true">↗</span>
+          {{ channel.handle }}<span aria-hidden="true"> ↗</span>
         </span>
         <span class="sr-only">, opens in a new tab</span>
       </a>

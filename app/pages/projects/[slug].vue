@@ -64,7 +64,7 @@ const repoLabel = computed(() => project.value.repo?.replace(/^https:\/\//, ''))
         rel="noopener"
         class="font-mono text-[12px] tracking-[1px] text-ink-dim no-underline transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold"
       >
-        {{ repoLabel }} <span aria-hidden="true">↗</span
+        {{ repoLabel }}<span aria-hidden="true"> ↗</span
         ><span class="sr-only">, opens in a new tab</span>
       </a>
     </template>

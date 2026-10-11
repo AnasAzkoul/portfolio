@@ -108,7 +108,7 @@ const rowDelay = (i: number) => 250 + i * 80
             {{ preview.name }}
           </h3>
           <p
-            class="mt-5 text-[20px] leading-[1.55] font-medium text-ink lining-nums"
+            class="mt-5 max-w-measure text-[20px] leading-[1.55] font-medium text-ink lining-nums"
           >
             {{ preview.context.text }}
             <DraftNote v-if="preview.context.todo">
@@ -124,7 +124,7 @@ const rowDelay = (i: number) => 250 + i * 80
             tabindex="-1"
             class="mt-7 inline-block border border-gold/45 px-3.5 py-2 text-[17px] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi"
           >
-            Open case study <span aria-hidden="true">→</span>
+            Open case study<span aria-hidden="true"> →</span>
           </NuxtLink>
         </article>
       </Transition>

@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { enableAutoUnmount, type BaseWrapper } from '@vue/test-utils'
+import {
+  enableAutoUnmount,
+  type BaseWrapper,
+  type DOMWrapper
+} from '@vue/test-utils'
 import App from '~/app.vue'
 
 // Mounted into the document, so focus really moves, and with real
@@ -29,6 +33,17 @@ const tabbable = (within: BaseWrapper<Node>) =>
 
 // Long enough for anything that was going to happen to have happened.
 const settle = () => new Promise((resolve) => setTimeout(resolve, 50))
+
+// Every view, an open case study included.
+const views = [
+  '/',
+  '/experience',
+  '/projects',
+  '/projects/client-portfolio',
+  '/stack',
+  '/story',
+  '/contact'
+]
 
 describe('after each navigation', () => {
   it("moves focus to the new view's heading", async () => {
@@ -154,18 +169,13 @@ describe('focus styles', () => {
       )
       .map((el) => el.text() || el.html())
 
-  it.each([
-    '/',
-    '/experience',
-    '/projects',
-    '/projects/client-portfolio',
-    '/stack',
-    '/story',
-    '/contact'
-  ])('outlines everything focusable in 2px of gold on %s', async (route) => {
-    const wrapper = await visit(route)
-    expect(unoutlined(wrapper)).toEqual([])
-  })
+  it.each(views)(
+    'outlines everything focusable in 2px of gold on %s',
+    async (route) => {
+      const wrapper = await visit(route)
+      expect(unoutlined(wrapper)).toEqual([])
+    }
+  )
 
   it('outlines the open section menu in 2px of gold', async () => {
     const wrapper = await visit('/')
@@ -174,17 +184,6 @@ describe('focus styles', () => {
     expect(unoutlined(wrapper)).toEqual([])
   })
 })
-
-// Every view, an open case study included.
-const views = [
-  '/',
-  '/experience',
-  '/projects',
-  '/projects/client-portfolio',
-  '/stack',
-  '/story',
-  '/contact'
-]
 
 describe('text size', () => {
   // Each element set in a size under 12px, by its `text-[…px]` classes (a
@@ -238,11 +237,21 @@ describe('symbols', () => {
 })
 
 describe('tab order', () => {
+  // What a screen reader names a stop: its label, or else its text, less
+  // anything hidden from assistive tech.
+  const spokenName = (el: DOMWrapper<Element>) => {
+    const label = el.attributes('aria-label')
+    if (label) return label
+    const copy = el.element.cloneNode(true) as Element
+    copy.querySelectorAll('[aria-hidden="true"]').forEach((h) => h.remove())
+    return copy.textContent?.replace(/\s+/g, ' ').trim()
+  }
+
   // What a screen reader names each stop the keyboard reaches, in order.
   const stops = (wrapper: Wrapper) =>
     tabbable(wrapper)
       .filter((el) => !el.element.closest('[inert]'))
-      .map((el) => el.attributes('aria-label') ?? el.text())
+      .map(spokenName)
 
   it('runs from the mark and the sections into the view, as the page reads', async () => {
     const wrapper = await visit('/contact')
@@ -254,7 +263,7 @@ describe('tab order', () => {
       'Story',
       'Contact',
       'Sections',
-      'GitHub @ANASAZKOUL ↗, opens in a new tab'
+      'GitHub @ANASAZKOUL, opens in a new tab'
     ])
   })
 
@@ -272,7 +281,7 @@ describe('tab order', () => {
       const wrapper = await visit(route)
       const viewStops = tabbable(wrapper.find('main'))
         .filter((el) => !el.element.closest('[inert]'))
-        .map((el) => el.attributes('aria-label') ?? el.text())
+        .map(spokenName)
       expect(stops(wrapper)).toEqual([
         'Anas Azkoul',
         'Experience',
@@ -290,7 +299,7 @@ describe('tab order', () => {
     const wrapper = await visit('/projects/client-portfolio')
     expect(stops(wrapper).slice(7)).toEqual([
       'Back to all projects',
-      'github.com/AnasAzkoul/martin-portfolio ↗, opens in a new tab'
+      'github.com/AnasAzkoul/martin-portfolio, opens in a new tab'
     ])
   })
 

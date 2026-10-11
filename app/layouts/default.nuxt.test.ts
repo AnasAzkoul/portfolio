@@ -119,7 +119,7 @@ describe('default layout', () => {
     )
   })
 
-  it('links the mark, my name, home', async () => {
+  it('links the mark, the name, home', async () => {
     const wrapper = await mountAt('/projects')
     const mark = wrapper.find('[data-mark]')
     expect(mark.attributes('href')).toBe('/')

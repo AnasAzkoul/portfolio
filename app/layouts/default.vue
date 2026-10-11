@@ -139,11 +139,13 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     <!-- Ahead of the view in the DOM, so Tab reads the page as it looks:
          the mark, then the sections, then the view. -->
     <header>
-      <!-- Above the open section menu, so the way home stays in view. -->
+      <!-- Above the open section menu, so the way home stays in view. Set
+           1px above the nav, so the larger name shares its baseline; and
+           on phones, level with the centre of the section menu's star. -->
       <NuxtLink
         data-mark
         to="/"
-        class="absolute top-[31px] left-11 z-5 text-[18px] font-medium text-ink no-underline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-[21px] max-[720px]:left-6"
+        class="absolute top-[31px] left-11 z-5 text-[18px] font-medium text-ink no-underline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-[23px] max-[720px]:left-6"
       >
         Anas Azkoul
       </NuxtLink>

@@ -58,7 +58,7 @@ const item =
   <FramedPanel kicker="01 · WORK EXPERIENCE" title="Experience">
     <h3>Scala · Sittard, Netherlands</h3>
     <div v-for="role in roles" :key="role.title" data-role class="mt-5">
-      <h4 class="text-[22px] leading-tight font-medium">
+      <h4 class="text-[22px] leading-tight font-semibold">
         {{ role.title }}
         <span v-if="role.track" class="font-normal text-ink-dim italic">
           {{ role.track }}
