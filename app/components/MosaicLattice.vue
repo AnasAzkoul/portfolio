@@ -95,7 +95,7 @@ svg {
 .g-line2 {
   stroke: var(--color-gold-hi);
   stroke-width: 1;
-  opacity: 0.28;
+  opacity: 0.42;
 }
 .g-fine {
   stroke: var(--color-gold);
@@ -109,15 +109,15 @@ svg {
 }
 .acc-red {
   fill: var(--color-red);
-  opacity: 0.55;
+  opacity: 0.9;
 }
 .acc-grn {
   fill: var(--color-green);
-  opacity: 0.55;
+  opacity: 0.9;
 }
 .acc-prl {
   fill: var(--color-pearl);
-  opacity: 0.55;
+  opacity: 0.9;
 }
 .hot {
   transition: filter 0.35s ease;
