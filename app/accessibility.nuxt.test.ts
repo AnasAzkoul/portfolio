@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { enableAutoUnmount } from '@vue/test-utils'
+import { enableAutoUnmount, type BaseWrapper } from '@vue/test-utils'
 import App from '~/app.vue'
 
 // Mounted into the document, so focus really moves, and with real
@@ -22,8 +22,8 @@ type Wrapper = Awaited<ReturnType<typeof visit>>
 const focusedText = () => document.activeElement?.textContent?.trim()
 
 // Everything the keyboard can reach: links, buttons and other tab stops.
-const tabbable = (wrapper: Wrapper) =>
-  wrapper
+const tabbable = (within: BaseWrapper<Node>) =>
+  within
     .findAll('a[href], button, [tabindex]')
     .filter((el) => el.attributes('tabindex') !== '-1')
 
@@ -108,6 +108,22 @@ describe('Escape', () => {
     await vi.waitFor(() => expect(currentPath()).toBe('/stack'))
   })
 
+  it('closes one view per press, however long Escape is held', async () => {
+    await visit('/projects/learnflow')
+    pressEscape()
+    await vi.waitFor(() => expect(currentPath()).toBe('/projects'))
+    // The key repeating while held down.
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'Escape',
+        repeat: true,
+        cancelable: true
+      })
+    )
+    await settle()
+    expect(currentPath()).toBe('/projects')
+  })
+
   it('does nothing on Home', async () => {
     await visit('/')
     pressEscape()
@@ -180,6 +196,34 @@ describe('tab order', () => {
       'GitHub @ANASAZKOUL ↗, opens in a new tab'
     ])
   })
+
+  it.each([
+    '/',
+    '/experience',
+    '/projects',
+    '/projects/learnflow',
+    '/stack',
+    '/story',
+    '/contact'
+  ])(
+    'runs through the mark and sections, then the view, on %s',
+    async (route) => {
+      const wrapper = await visit(route)
+      const viewStops = tabbable(wrapper.find('main'))
+        .filter((el) => !el.element.closest('[inert]'))
+        .map((el) => el.attributes('aria-label') ?? el.text())
+      expect(stops(wrapper)).toEqual([
+        'A. AZKOUL · EST. DAMASCUS',
+        'EXPERIENCE',
+        'PROJECTS',
+        'STACK',
+        'STORY',
+        'CONTACT',
+        'Sections',
+        ...viewStops
+      ])
+    }
+  )
 
   it('passes over the Projects index while a case study is open over it', async () => {
     const wrapper = await visit('/projects/client-portfolio')

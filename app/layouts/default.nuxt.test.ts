@@ -274,6 +274,20 @@ describe('section menu', () => {
     expect(menu(wrapper).exists()).toBe(false)
   })
 
+  it('hands focus back to the button when the current section is picked again', async () => {
+    const wrapper = await mountSuspended(DefaultLayout, {
+      route: '/projects',
+      attachTo: document.body
+    })
+    await toggle(wrapper).trigger('click')
+    const current = menu(wrapper).find('a[href="/projects"]')
+    ;(current.element as HTMLElement).focus()
+    await current.trigger('click')
+    expect(menu(wrapper).exists()).toBe(false)
+    expect(document.activeElement).toBe(toggle(wrapper).element)
+    wrapper.unmount()
+  })
+
   it('closes on any navigation', async () => {
     const wrapper = await openAt('/')
     await useRouter().push('/stack')

@@ -50,10 +50,11 @@ const closeTo = computed(() => {
 })
 
 // The open section menu claims Escape first (its listener is added before
-// this one) and marks it handled, so the view behind stays open.
+// this one) and marks it handled, so the view behind stays open. A held key
+// repeats; only the press itself closes a view, so it closes just the one.
 function onKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Escape' || event.defaultPrevented || !closeTo.value) return
-  navigateTo(closeTo.value)
+  if (event.key !== 'Escape' || event.repeat || event.defaultPrevented) return
+  if (closeTo.value) navigateTo(closeTo.value)
 }
 
 // The new view is only in place once its page has loaded and, under an

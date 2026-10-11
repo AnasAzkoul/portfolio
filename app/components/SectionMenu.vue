@@ -21,6 +21,7 @@ defineProps<{
 
 const menuId = useId()
 const toggleButton = useTemplateRef('toggle')
+const menu = useTemplateRef('menu')
 const route = useRoute()
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
@@ -56,6 +57,19 @@ function onKeydown(event: KeyboardEvent) {
 // Picking a section navigates; picking the current one doesn't, so its
 // link closes the menu itself.
 watch(() => route.fullPath, close)
+
+// Focus on a row would go with the menu, so it comes back to the button
+// first. Checked before the menu leaves the page, while focus is still in
+// it. After a navigation the layout then moves it on to the new view.
+watch(
+  open,
+  (isOpen) => {
+    if (!isOpen && menu.value?.contains(document.activeElement)) {
+      toggleButton.value?.focus()
+    }
+  },
+  { flush: 'pre' }
+)
 
 // From 900px the menu is hidden and the nav shows, so it mustn't stay open.
 let wideScreen: MediaQueryList | undefined
@@ -117,6 +131,7 @@ onBeforeUnmount(() => {
       <div
         v-if="open"
         :id="menuId"
+        ref="menu"
         data-section-menu
         class="fixed inset-0 z-4 flex flex-col justify-center bg-bg2/94 px-6 backdrop-blur-[3px]"
       >
