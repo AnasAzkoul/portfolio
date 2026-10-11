@@ -171,7 +171,7 @@ describe('FramedPanel', () => {
       expect(wrapper.find('section').classes()).toEqual(
         expect.arrayContaining([
           unframed,
-          'min-[1280px]:w-[min(var(--container-measure),100%_-_88px)]'
+          'min-[1280px]:w-[min(680px,100%_-_88px)]'
         ])
       )
     })
