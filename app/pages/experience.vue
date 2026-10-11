@@ -3,6 +3,9 @@
  * Experience: my work at Scala, then certifications, education and
  * languages, worded as on the CV. Gaps in the CV show as draft notes: a
  * role without its `start` yet, the degree's details, other languages.
+ *
+ * So a recruiter can skim it, a role leads with its strongest bullets and
+ * keeps the rest behind "More".
  */
 definePageMeta({ turn: 1, crumb: 'EXPERIENCE', stage: 'focus' })
 useSeoMeta({ title: 'Experience' })
@@ -13,7 +16,10 @@ interface Role {
   track?: string
   /** When the role began, e.g. "Mar 2024". A draft note until it's known. */
   start?: string
+  /** Shown up front: the role's strongest work, strongest first. */
   bullets: string[]
+  /** The rest, behind a "More" toggle; the CV has them all. */
+  more?: string[]
 }
 
 const roles: Role[] = [
@@ -21,13 +27,15 @@ const roles: Role[] = [
     title: 'Frontend Developer, Services',
     track: '(trainee track)',
     bullets: [
+      "Built a breadcrumb system from scratch for the app's deeply nested, multi-level dynamic routing — a composable, component, and definePageMeta configuration — including a route cache that resolved database-ID route segments into human-readable labels and pruned obsolete entries on navigation.",
+      "Re-skinned the SOT UI into a themeable, white-label system for multiple customers' branding and adapted checkout/payment flows per customer.",
+      "Carried out the platform's migration from Nuxt 3 to Nuxt 4 within an AI-assisted development workflow (Claude Code) defined by the senior developer — driving the migration, reviewing generated changes, and resolving issues."
+    ],
+    more: [
       "Contributed production frontend code to Quintet, Scala's TypeScript/Nuxt QSR menu-board platform, across the canvas-based menu-board design app and the self-order terminals (SOT).",
-      "Carried out the platform's migration from Nuxt 3 to Nuxt 4 within an AI-assisted development workflow (Claude Code) defined by the senior developer — driving the migration, reviewing generated changes, and resolving issues.",
       'Introduced a class-variance-authority pattern for component variants and sizes, replacing scattered if/switch logic with a dedicated typed module — making components reusable and scalable; the pattern was not previously in the codebase.',
       'Diagnosed and fixed a scheduling-page bug where an "unscheduled" warning icon only rendered for the active tab; traced it to parent-level data fetching and refactored the icon into a self-contained component with two-way parent-child communication so every tab resolved independently.',
-      "Built a breadcrumb system from scratch for the app's deeply nested, multi-level dynamic routing — a composable, component, and definePageMeta configuration — including a route cache that resolved database-ID route segments into human-readable labels and pruned obsolete entries on navigation.",
-      'Rebuilt a large portion of the shared atomic UI component library used by other developers, and wrote its documentation.',
-      "Re-skinned the SOT UI into a themeable, white-label system for multiple customers' branding and adapted checkout/payment flows per customer."
+      'Rebuilt a large portion of the shared atomic UI component library used by other developers, and wrote its documentation.'
     ]
   },
   {
@@ -72,11 +80,30 @@ const item =
         <DraftNote v-else>add: start date</DraftNote>
         – PRESENT
       </div>
-      <ul class="mt-3 space-y-2">
+      <ul data-lead class="mt-3 space-y-2">
         <li v-for="bullet in role.bullets" :key="bullet" :class="item">
           {{ bullet }}
         </li>
       </ul>
+      <!-- Closed at first, so the strongest work is what a skim takes in;
+           a native disclosure, so keyboards and screen readers need nothing
+           more. The chevron turns over once it's open. -->
+      <details v-if="role.more" data-more class="group mt-1">
+        <summary
+          class="ml-5 inline-flex cursor-pointer list-none items-center gap-2.5 py-1 text-[18px] text-gold transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold [&::-webkit-details-marker]:hidden"
+        >
+          More
+          <span
+            aria-hidden="true"
+            class="size-[7px] -translate-y-0.5 rotate-45 border-r border-b border-current transition-[rotate,translate] duration-200 group-open:translate-y-0.5 group-open:-rotate-135"
+          />
+        </summary>
+        <ul class="mt-2 space-y-2">
+          <li v-for="bullet in role.more" :key="bullet" :class="item">
+            {{ bullet }}
+          </li>
+        </ul>
+      </details>
     </div>
 
     <h3>Certifications</h3>

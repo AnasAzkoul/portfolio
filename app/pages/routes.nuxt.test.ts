@@ -98,12 +98,34 @@ describe('experience', () => {
     ])
     const bullets = body.findAll('[data-role]').map((r) => r.findAll('li'))
     expect(bullets.map((b) => b.length)).toEqual([7, 2])
-    expect(bullets[0]![0]!.text()).toMatch(
-      /^Contributed production frontend code to Quintet/
-    )
     expect(body.find('[data-certifications]').text()).toContain(
       'Certified Vue.js Developer (Level I)'
     )
+  })
+
+  it('leads the developer role with its three strongest bullets, worded as on the CV', async () => {
+    const wrapper = await visit('/experience')
+    const lead = wrapper
+      .findAll('[data-role]')[0]!
+      .findAll('[data-lead] > li')
+      .map((li) => li.text())
+    expect(lead).toEqual([
+      "Built a breadcrumb system from scratch for the app's deeply nested, multi-level dynamic routing — a composable, component, and definePageMeta configuration — including a route cache that resolved database-ID route segments into human-readable labels and pruned obsolete entries on navigation.",
+      "Re-skinned the SOT UI into a themeable, white-label system for multiple customers' branding and adapted checkout/payment flows per customer.",
+      "Carried out the platform's migration from Nuxt 3 to Nuxt 4 within an AI-assisted development workflow (Claude Code) defined by the senior developer — driving the migration, reviewing generated changes, and resolving issues."
+    ])
+  })
+
+  it('keeps the rest of the developer role behind a "More" toggle, closed at first', async () => {
+    const wrapper = await visit('/experience')
+    const [developer, support] = wrapper.findAll('[data-role]')
+    const more = developer!.find('details[data-more]')
+    expect(more.attributes('open')).toBeUndefined()
+    expect(more.find('summary').text()).toBe('More')
+    const rest = more.findAll('li').map((li) => li.text())
+    expect(rest).toHaveLength(4)
+    expect(rest[0]).toMatch(/^Contributed production frontend code to Quintet/)
+    expect(support!.find('[data-more]').exists()).toBe(false)
   })
 
   it('marks the gaps in the CV as copy still to be written', async () => {

@@ -25,10 +25,11 @@ type Wrapper = Awaited<ReturnType<typeof visit>>
 
 const focusedText = () => document.activeElement?.textContent?.trim()
 
-// Everything the keyboard can reach: links, buttons and other tab stops.
+// Everything the keyboard can reach: links, buttons, disclosure toggles and
+// other tab stops.
 const tabbable = (within: BaseWrapper<Node>) =>
   within
-    .findAll('a[href], button, [tabindex]')
+    .findAll('a[href], button, summary, [tabindex]')
     .filter((el) => el.attributes('tabindex') !== '-1')
 
 // Long enough for anything that was going to happen to have happened.
