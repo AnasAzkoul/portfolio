@@ -24,9 +24,10 @@ const reveal = computed(() => [
   { 'translate-y-2.5 opacity-0': !revealed.value }
 ])
 
-// The two next steps share one bordered look.
+// The two next steps share one bordered look, on the framed panel's ground
+// so the lattice's lines don't run through their labels.
 const nextStep =
-  'inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold'
+  'inline-block border border-gold/45 bg-panel px-5 py-2.5 backdrop-blur-[3px] text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold'
 </script>
 
 <template>

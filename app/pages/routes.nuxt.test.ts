@@ -66,6 +66,15 @@ describe('home', () => {
     )
   })
 
+  it("sets both links on the panel's ground, so the lattice doesn't show through", async () => {
+    const wrapper = await visit('/')
+    for (const link of ['[data-home-cta]', '[data-home-cv]']) {
+      expect(wrapper.find(link).classes()).toEqual(
+        expect.arrayContaining(['bg-panel', 'backdrop-blur-[3px]'])
+      )
+    }
+  })
+
   it('drops the ornament and tagline on a short screen, so the links still fit', async () => {
     const wrapper = await visit('/')
     expect(wrapper.find('[data-divider]').classes()).toContain('short:hidden')
