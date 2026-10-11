@@ -119,40 +119,33 @@ describe('default layout', () => {
     )
   })
 
-  it('links the mark home', async () => {
+  it('links the mark, my name, home', async () => {
     const wrapper = await mountAt('/projects')
     const mark = wrapper.find('[data-mark]')
     expect(mark.attributes('href')).toBe('/')
-    expect(mark.text()).toBe('A. AZKOUL · EST. DAMASCUS')
+    expect(mark.text()).toBe('Anas Azkoul')
   })
 
-  it('tightens the mark below 360px, so it clears the section menu star', async () => {
-    const wrapper = await mountAt('/')
-    expect(wrapper.find('[data-mark]').classes()).toContain(
-      'max-[360px]:tracking-[1.5px]'
-    )
-  })
-
-  it('names the nav and links every section', async () => {
+  it('names each section in the nav in sentence case, and links it', async () => {
     const wrapper = await mountAt('/')
     const nav = wrapper.find('nav')
     expect(nav.attributes('aria-label')).toBe('Sections')
     expect(
       nav.findAll('a').map((a) => [a.text(), a.attributes('href')])
     ).toEqual([
-      ['EXPERIENCE', '/experience'],
-      ['PROJECTS', '/projects'],
-      ['STACK', '/stack'],
-      ['STORY', '/story'],
-      ['CONTACT', '/contact']
+      ['Experience', '/experience'],
+      ['Projects', '/projects'],
+      ['Stack', '/stack'],
+      ['Story', '/story'],
+      ['Contact', '/contact']
     ])
   })
 
   it.each([
     ['/', []],
-    ['/projects', ['PROJECTS']],
-    ['/projects/learnflow', ['PROJECTS']],
-    ['/story', ['STORY']]
+    ['/projects', ['Projects']],
+    ['/projects/learnflow', ['Projects']],
+    ['/story', ['Story']]
   ])('marks the current section on %s', async (route, current) => {
     const wrapper = await mountAt(route)
     const marked = wrapper
@@ -222,11 +215,11 @@ describe('section menu', () => {
           a.attributes('href')
         ])
     ).toEqual([
-      ['01', 'Experience', 'WORK EXPERIENCE', '/experience'],
-      ['02', 'Projects', 'SELECTED PROJECTS', '/projects'],
-      ['03', 'Stack', 'TOOLS OF THE CRAFT', '/stack'],
-      ['04', 'Story', 'HOW I CAME TO THE FRONTEND', '/story'],
-      ['05', 'Contact', 'OPEN TO FRONTEND ROLES IN NL', '/contact']
+      ['01', 'Experience', 'Work experience', '/experience'],
+      ['02', 'Projects', 'Selected projects', '/projects'],
+      ['03', 'Stack', 'Tools of the craft', '/stack'],
+      ['04', 'Story', 'How I came to the frontend', '/story'],
+      ['05', 'Contact', 'Open to frontend roles in NL', '/contact']
     ])
   })
 

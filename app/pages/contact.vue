@@ -23,7 +23,7 @@ const channels: Channel[] = [
 const rowClass =
   'flex justify-between gap-4 border-b border-gold/16 py-3.5 text-[20px] text-ink no-underline'
 // The handle's type, without its colour: a draft note keeps its own.
-const handleType = 'self-center font-mono text-[11px] tracking-[2px]'
+const handleType = 'self-center font-mono text-[12px] tracking-[1px]'
 </script>
 
 <template>

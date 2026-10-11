@@ -14,7 +14,7 @@ defineSlots<{ default: () => unknown }>()
 <template>
   <span
     data-chip
-    class="inline-block border border-gold/35 px-2.5 py-[5px] font-mono text-[11px] tracking-[1px] text-ink"
+    class="inline-block border border-gold/35 px-2.5 py-[5px] font-mono text-[12px] tracking-[1px] text-ink"
   >
     <slot />
   </span>

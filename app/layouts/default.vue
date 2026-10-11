@@ -139,28 +139,27 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     <!-- Ahead of the view in the DOM, so Tab reads the page as it looks:
          the mark, then the sections, then the view. -->
     <header>
-      <!-- Above the open section menu, so the way home stays in view. Below
-           360px its letters close up, so it clears the star opposite. -->
+      <!-- Above the open section menu, so the way home stays in view. -->
       <NuxtLink
         data-mark
         to="/"
-        class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6 max-[360px]:tracking-[1.5px]"
+        class="absolute top-[31px] left-11 z-5 text-[18px] font-medium text-ink no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-[21px] max-[720px]:left-6"
       >
-        A. AZKOUL · <b class="font-normal text-gold-hi">EST. DAMASCUS</b>
+        Anas Azkoul
       </NuxtLink>
 
       <nav
         aria-label="Sections"
-        class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[900px]:hidden"
+        class="absolute top-8 right-11 z-3 flex gap-7 max-[900px]:hidden"
       >
         <NuxtLink
           v-for="section in sections"
           :key="section.to"
           :to="section.to"
           :aria-current="currentSectionPath === section.to ? 'page' : undefined"
-          class="relative text-[12px] tracking-[3px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
+          class="relative text-[17px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
         >
-          {{ section.label }}
+          {{ section.name }}
         </NuxtLink>
       </nav>
 

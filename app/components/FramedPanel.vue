@@ -14,7 +14,7 @@
  * the title and a diamond rule under it. `useRoute` here is the page's own
  * route, so a page on its way out keeps its look while the next one loads.
  *
- * The body sets its own `h3` (mono gold section labels) and `p` (reading
+ * The body sets its own `h3` (serif gold subheadings) and `p` (reading
  * copy) styles, so content can use plain elements.
  *
  * The title has tabindex="-1" so the layout can move focus to it when the
@@ -153,7 +153,7 @@ onBeforeUnmount(() => bodyObserver?.disconnect())
       data-panel-body
       :tabindex="bodyScrolls ? 0 : undefined"
       :class="framedPanelBody({ stage })"
-      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink focus-visible:outline-1 focus-visible:-outline-offset-8 focus-visible:outline-gold max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-mono [&_h3]:text-[11px] [&_h3]:font-normal [&_h3]:tracking-[4px] [&_h3]:text-gold [&_h3]:uppercase [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
+      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink focus-visible:outline-1 focus-visible:-outline-offset-8 focus-visible:outline-gold max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-7 [&_h3]:mb-2 [&_h3]:text-[22px] [&_h3]:leading-tight [&_h3]:font-semibold [&_h3]:text-gold [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
     >
       <slot />
     </div>

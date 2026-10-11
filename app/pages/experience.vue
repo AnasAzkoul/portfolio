@@ -66,7 +66,7 @@ const item =
       </h4>
       <div
         data-dates
-        class="mt-1 font-mono text-[11px] tracking-[2px] text-ink-dim"
+        class="mt-1 font-mono text-[12px] tracking-[1px] text-ink-dim"
       >
         <template v-if="role.start">{{ role.start }}</template>
         <DraftNote v-else>add: start date</DraftNote>

@@ -163,10 +163,7 @@ onBeforeUnmount(() => {
                   <span data-name class="text-[34px] leading-none font-medium">
                     {{ section.name }}
                   </span>
-                  <span
-                    data-subtitle
-                    class="font-mono text-[9px] tracking-[2px] text-ink-dim"
-                  >
+                  <span data-subtitle class="text-[15px] text-ink-dim italic">
                     {{ section.subtitle }}
                   </span>
                 </span>

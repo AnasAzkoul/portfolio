@@ -1,10 +1,8 @@
 /** One of the site's top-level sections. */
 export interface Section {
-  /** Label in the nav, e.g. "PROJECTS". */
-  label: string
-  /** Name in the section menu, e.g. "Projects". */
+  /** Name in the nav and the section menu, e.g. "Projects". */
   name: string
-  /** Mono line under the name in the section menu. */
+  /** Italic line under the name in the section menu. */
   subtitle: string
   /** The section's route. */
   to: string
@@ -16,33 +14,28 @@ export interface Section {
  */
 export const sections: readonly Section[] = [
   {
-    label: 'EXPERIENCE',
     name: 'Experience',
-    subtitle: 'WORK EXPERIENCE',
+    subtitle: 'Work experience',
     to: '/experience'
   },
   {
-    label: 'PROJECTS',
     name: 'Projects',
-    subtitle: 'SELECTED PROJECTS',
+    subtitle: 'Selected projects',
     to: '/projects'
   },
   {
-    label: 'STACK',
     name: 'Stack',
-    subtitle: 'TOOLS OF THE CRAFT',
+    subtitle: 'Tools of the craft',
     to: '/stack'
   },
   {
-    label: 'STORY',
     name: 'Story',
-    subtitle: 'HOW I CAME TO THE FRONTEND',
+    subtitle: 'How I came to the frontend',
     to: '/story'
   },
   {
-    label: 'CONTACT',
     name: 'Contact',
-    subtitle: 'OPEN TO FRONTEND ROLES IN NL',
+    subtitle: 'Open to frontend roles in NL',
     to: '/contact'
   }
 ]

@@ -185,12 +185,12 @@ describe('tab order', () => {
   it('runs from the mark and the sections into the view, as the page reads', async () => {
     const wrapper = await visit('/contact')
     expect(stops(wrapper)).toEqual([
-      'A. AZKOUL · EST. DAMASCUS',
-      'EXPERIENCE',
-      'PROJECTS',
-      'STACK',
-      'STORY',
-      'CONTACT',
+      'Anas Azkoul',
+      'Experience',
+      'Projects',
+      'Stack',
+      'Story',
+      'Contact',
       'Sections',
       'GitHub @ANASAZKOUL ↗, opens in a new tab'
     ])
@@ -212,12 +212,12 @@ describe('tab order', () => {
         .filter((el) => !el.element.closest('[inert]'))
         .map((el) => el.attributes('aria-label') ?? el.text())
       expect(stops(wrapper)).toEqual([
-        'A. AZKOUL · EST. DAMASCUS',
-        'EXPERIENCE',
-        'PROJECTS',
-        'STACK',
-        'STORY',
-        'CONTACT',
+        'Anas Azkoul',
+        'Experience',
+        'Projects',
+        'Stack',
+        'Story',
+        'Contact',
         'Sections',
         ...viewStops
       ])
@@ -236,18 +236,18 @@ describe('tab order', () => {
     const wrapper = await visit('/contact')
     await wrapper.find('[data-menu-toggle]').trigger('click')
     expect(stops(wrapper)).toEqual([
-      'A. AZKOUL · EST. DAMASCUS',
-      'EXPERIENCE',
-      'PROJECTS',
-      'STACK',
-      'STORY',
-      'CONTACT',
+      'Anas Azkoul',
+      'Experience',
+      'Projects',
+      'Stack',
+      'Story',
+      'Contact',
       'Close sections',
-      '01ExperienceWORK EXPERIENCE',
-      '02ProjectsSELECTED PROJECTS',
-      '03StackTOOLS OF THE CRAFT',
-      '04StoryHOW I CAME TO THE FRONTEND',
-      '05ContactOPEN TO FRONTEND ROLES IN NL'
+      '01ExperienceWork experience',
+      '02ProjectsSelected projects',
+      '03StackTools of the craft',
+      '04StoryHow I came to the frontend',
+      '05ContactOpen to frontend roles in NL'
     ])
   })
 
