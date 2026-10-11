@@ -145,4 +145,24 @@ describe('FramedPanel', () => {
     })
     expect(wrapper.find('section').classes()).toContain(width)
   })
+
+  const besideLattice =
+    'min-[1280px]:translate-x-[calc(44px_-_(100vw_-_100%)/2)]'
+
+  it.each([undefined, 'default', 'narrow'] as const)(
+    'variant %s moves beside the lattice on wide screens',
+    async (variant) => {
+      const wrapper = await mountSuspended(FramedPanel, {
+        props: { ...props, variant }
+      })
+      expect(wrapper.find('section').classes()).toContain(besideLattice)
+    }
+  )
+
+  it('variant fluid stays where its container puts it', async () => {
+    const wrapper = await mountSuspended(FramedPanel, {
+      props: { ...props, variant: 'fluid' }
+    })
+    expect(wrapper.find('section').classes()).not.toContain(besideLattice)
+  })
 })

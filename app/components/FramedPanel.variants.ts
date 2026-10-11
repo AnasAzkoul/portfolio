@@ -1,5 +1,13 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
+// From 1280px the panel moves left to line up with the mark (left: 44px), so
+// the lattice's ring, and its turn between sections, stay in view beside it.
+// Every panel is laid out centred in the viewport, so the shift is the distance
+// from there to 44px: 44px − (viewport width − panel width) / 2. `translate`
+// moves it without touching layout, and is separate from the `scale` the page
+// transition animates.
+const besideLattice = 'min-[1280px]:translate-x-[calc(44px_-_(100vw_-_100%)/2)]'
+
 export const framedPanel = cva(
   [
     // No taller than the room the stage's view area leaves (--view-height).
@@ -11,8 +19,8 @@ export const framedPanel = cva(
   {
     variants: {
       variant: {
-        default: 'w-[min(760px,92vw)]',
-        narrow: 'w-[min(560px,92vw)]',
+        default: `w-[min(760px,92vw)] ${besideLattice}`,
+        narrow: `w-[min(560px,92vw)] ${besideLattice}`,
         fluid: 'w-full'
       }
     },
