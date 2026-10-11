@@ -57,7 +57,7 @@ const reveal = computed(() => [
       class="text-[clamp(52px,min(11vw,13dvh),140px)] leading-[0.9] font-medium tracking-[1px] text-ink delay-[680ms] focus:outline-none"
       :class="reveal"
     >
-      Anas <span class="font-normal italic">Azkoul</span>
+      Anas Azkoul
     </h1>
     <DiamondDivider
       class="mx-auto mt-5 mb-[18px] delay-[680ms]"
