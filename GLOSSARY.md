@@ -11,3 +11,7 @@ _Avoid_: Highlight, accent colour, pop
 **Inlaid star**:
 The 8-point gold star set with a project's Jewel accent, shown beside its kicker in the Work view's preview. Each project has its own jewel.
 _Avoid_: Icon, badge, project logo
+
+**Section menu**:
+The full-screen numbered index of the site's sections that stands in for the nav on screens narrower than 900px. It opens from a star button opposite the mark; while it is open, the star's two squares flatten into an X. The star carries no Jewel accent, so it is not an Inlaid star.
+_Avoid_: Hamburger menu, drawer, mobile nav

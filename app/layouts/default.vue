@@ -4,6 +4,8 @@
  * and vignette overlays, and the corner chrome (mark, nav, breadcrumb).
  * The page fills the viewport and never scrolls; the view goes in the slot.
  *
+ * Below 900px the nav doesn't fit, so the section menu stands in for it.
+ *
  * Pages steer it through definePageMeta: `turn` (0–4) turns the lattice,
  * `crumb` labels the footer breadcrumb.
  *
@@ -12,14 +14,10 @@
  */
 defineSlots<{ default?: () => unknown }>()
 
-const sections = [
-  { label: 'WORK', to: '/work' },
-  { label: 'STACK', to: '/stack' },
-  { label: 'STORY', to: '/story' },
-  { label: 'CONTACT', to: '/contact' }
-] as const
-
 const route = useRoute()
+
+// While the section menu is open, the page behind it is inert.
+const menuOpen = ref(false)
 
 // A project under /work/… still counts as being on Work.
 const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
@@ -67,22 +65,24 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
 
     <div
       data-view-area
-      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-16"
+      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6"
+      :inert="menuOpen"
     >
       <slot />
     </div>
 
+    <!-- Above the open section menu, so the way home stays in view. -->
     <NuxtLink
       data-mark
       to="/"
-      class="absolute top-[34px] left-11 z-3 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6"
+      class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6"
     >
       A. AZKOUL · <b class="font-normal text-gold-hi">EST. DAMASCUS</b>
     </NuxtLink>
 
     <nav
       aria-label="Sections"
-      class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[720px]:top-auto max-[720px]:right-1/2 max-[720px]:bottom-[22px] max-[720px]:translate-x-1/2 max-[720px]:gap-[18px]"
+      class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[900px]:hidden"
     >
       <NuxtLink
         v-for="section in sections"
@@ -94,6 +94,8 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
         {{ section.label }}
       </NuxtLink>
     </nav>
+
+    <SectionMenu v-model:open="menuOpen" :current="currentSectionPath" />
 
     <div
       data-crumb
