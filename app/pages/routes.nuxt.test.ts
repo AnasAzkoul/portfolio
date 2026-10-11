@@ -66,7 +66,7 @@ describe('home', () => {
     )
   })
 
-  it('drops the ornament and tagline on a short screen, so the link still fits', async () => {
+  it('drops the ornament and tagline on a short screen, so the links still fit', async () => {
     const wrapper = await visit('/')
     expect(wrapper.find('[data-divider]').classes()).toContain('short:hidden')
     expect(wrapper.find('[data-tagline]').classes()).toContain('short:hidden')

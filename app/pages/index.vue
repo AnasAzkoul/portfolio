@@ -26,7 +26,7 @@ const reveal = computed(() => [
 
 // The two next steps share one bordered look.
 const nextStep =
-  'inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold'
+  'inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold'
 </script>
 
 <template>
@@ -65,7 +65,8 @@ const nextStep =
       Anas Azkoul
     </h1>
     <!-- On a short screen (a phone on its side) the ornament and tagline drop
-         out, so the line about work and the link to Projects still fit. -->
+         out, so the line about work and the links to Projects and the CV
+         still fit. -->
     <DiamondDivider
       data-divider
       class="mx-auto mt-5 mb-[18px] delay-[680ms] short:hidden"

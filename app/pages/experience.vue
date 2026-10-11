@@ -17,7 +17,7 @@ interface Role {
   /** When the role began, e.g. "Mar 2024". A draft note until it's known. */
   start?: string
   /** Shown up front: the role's strongest work, strongest first. */
-  bullets: string[]
+  lead: string[]
   /** The rest, behind a "More" toggle; the CV has them all. */
   more?: string[]
 }
@@ -26,7 +26,7 @@ const roles: Role[] = [
   {
     title: 'Frontend Developer, Services',
     track: '(trainee track)',
-    bullets: [
+    lead: [
       "Built a breadcrumb system from scratch for the app's deeply nested, multi-level dynamic routing — a composable, component, and definePageMeta configuration — including a route cache that resolved database-ID route segments into human-readable labels and pruned obsolete entries on navigation.",
       "Re-skinned the SOT UI into a themeable, white-label system for multiple customers' branding and adapted checkout/payment flows per customer.",
       "Carried out the platform's migration from Nuxt 3 to Nuxt 4 within an AI-assisted development workflow (Claude Code) defined by the senior developer — driving the migration, reviewing generated changes, and resolving issues."
@@ -40,7 +40,7 @@ const roles: Role[] = [
   },
   {
     title: 'Technical Support Engineer',
-    bullets: [
+    lead: [
       "Diagnose technical issues across Scala's Content Manager and Player ecosystem — log analysis, CEF/Chromium compatibility, version-compatibility constraints, and network/DNS issues — for enterprise customers.",
       'Translate informal bug reports into structured Jira tickets and maintain internal support documentation.'
     ]
@@ -81,7 +81,7 @@ const item =
         – PRESENT
       </div>
       <ul data-lead class="mt-3 space-y-2">
-        <li v-for="bullet in role.bullets" :key="bullet" :class="item">
+        <li v-for="bullet in role.lead" :key="bullet" :class="item">
           {{ bullet }}
         </li>
       </ul>

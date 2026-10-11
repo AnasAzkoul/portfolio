@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 
 /* A screen too short for a framed panel beside other content, such as a
-   phone on its side; the Projects preview drops out there. */
+   phone on its side; the Projects preview drops out there, and so do Home's
+   ornament and tagline. */
 @custom-variant short (@media (max-height: 600px));
 
 @theme {
