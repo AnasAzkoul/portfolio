@@ -5,6 +5,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/fonts'],
+  app: {
+    // Played by the `.page-*` classes in main.css.
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
   // Only .vue files are components, so a `*.variants.ts` can sit beside its component.
   components: [{ path: '~/components', extensions: ['.vue'] }],
   fonts: {

@@ -5,6 +5,10 @@
  * its kicker, name, context and stack, so a visitor can read before opening
  * the case study. On a phone it's the index alone.
  *
+ * When the page arrives the index rows rise into place one after another,
+ * each row's `--d` delaying it a step more. Closing a case study doesn't
+ * replay it: the index never left.
+ *
  * A project opens as the child route /projects/<slug>, over the index. The
  * index stays mounted underneath, hidden and inert, so it keeps the
  * previewed project for when the case study closes.
@@ -20,6 +24,9 @@ const previewed = ref(0)
 const preview = computed(() => projects[previewed.value]!)
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
+
+// The first row waits 250ms, then each one 80ms more (the prototype's timing).
+const rowDelay = (i: number) => 250 + i * 80
 </script>
 
 <template>
@@ -41,7 +48,12 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
           Projects
         </h2>
         <ol data-projects-list class="mt-7 border-t border-gold/18">
-          <li v-for="(project, i) in projects" :key="project.slug">
+          <li
+            v-for="(project, i) in projects"
+            :key="project.slug"
+            :style="{ '--d': `${rowDelay(i)}ms` }"
+            class="transition-[opacity,translate] delay-(--d) duration-600 ease-settle motion-reduce:transition-none starting:translate-y-2.5 starting:opacity-0"
+          >
             <NuxtLink
               :to="`/projects/${project.slug}`"
               :data-previewed="i === previewed ? '' : undefined"
