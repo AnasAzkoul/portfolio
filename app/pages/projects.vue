@@ -12,6 +12,7 @@
 import { framedPanel } from '~/components/FramedPanel.variants'
 
 definePageMeta({ turn: 2, crumb: 'PROJECTS' })
+useSeoMeta({ title: 'Projects' })
 
 const route = useRoute()
 const projectOpen = computed(() => route.params.slug !== undefined)

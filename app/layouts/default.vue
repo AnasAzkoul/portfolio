@@ -11,10 +11,38 @@
  *
  * The view area centres the page and lets clicks through to the lattice's
  * stars; only the page's root element takes pointer events.
+ *
+ * After each navigation, focus moves to the new view's heading: the one
+ * heading in the view with tabindex="-1".
  */
 defineSlots<{ default?: () => unknown }>()
 
 const route = useRoute()
+const router = useRouter()
+const nuxtApp = useNuxtApp()
+const viewArea = useTemplateRef('viewArea')
+
+// A case study opens over the Projects index, which keeps its own heading
+// but is inert underneath, so that heading is passed over.
+function focusViewHeading() {
+  const headings = viewArea.value?.querySelectorAll<HTMLElement>(
+    'h1[tabindex="-1"], h2[tabindex="-1"]'
+  )
+  const heading = [...(headings ?? [])].find((h) => !h.closest('[inert]'))
+  heading?.focus({ preventScroll: true })
+}
+
+// Not on the first load: focus starts at the top of the document then. The
+// new page is only in place once it has finished loading, so wait for that,
+// as Nuxt's own scroll behaviour does.
+let stopFocusingViews: (() => void) | undefined
+onMounted(() => {
+  stopFocusingViews = router.afterEach((to, from, failure) => {
+    if (failure || to.path === from.path) return
+    nuxtApp.hooks.hookOnce('page:loading:end', focusViewHeading)
+  })
+})
+onBeforeUnmount(() => stopFocusingViews?.())
 
 // While the section menu is open, the page behind it is inert.
 const menuOpen = ref(false)
@@ -64,6 +92,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     />
 
     <div
+      ref="viewArea"
       data-view-area
       class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6"
       :inert="menuOpen"

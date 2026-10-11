@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Story: how I came to the frontend. Draft copy, rewritten in ANA-80. */
 definePageMeta({ turn: 4, crumb: 'STORY' })
+useSeoMeta({ title: 'Story' })
 </script>
 
 <template>

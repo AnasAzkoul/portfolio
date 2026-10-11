@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Stack: the tools I work with, grouped as on the CV. */
 definePageMeta({ turn: 3, crumb: 'STACK' })
+useSeoMeta({ title: 'Stack' })
 
 const groups = [
   { area: 'Languages', tools: ['JavaScript', 'TypeScript', 'HTML', 'CSS'] },

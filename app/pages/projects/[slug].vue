@@ -22,6 +22,9 @@ const route = useRoute()
 // The middleware has already turned away unknown slugs.
 const project = computed(() => findProject(String(route.params.slug))!)
 
+// Named over the Projects index's own title while it's open.
+useSeoMeta({ title: () => project.value.name })
+
 const passages = computed(() => [
   { heading: 'Context', passage: project.value.context },
   { heading: 'Problem', passage: project.value.problem },

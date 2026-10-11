@@ -5,6 +5,7 @@
  * role without its `start` yet, the degree's details, other languages.
  */
 definePageMeta({ turn: 1, crumb: 'EXPERIENCE' })
+useSeoMeta({ title: 'Experience' })
 
 interface Role {
   title: string

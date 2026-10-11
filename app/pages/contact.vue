@@ -4,6 +4,7 @@
  * draft note in place of the handle and isn't a link.
  */
 definePageMeta({ turn: 5, crumb: 'CONTACT' })
+useSeoMeta({ title: 'Contact' })
 
 type Channel =
   | { name: string; href: string; handle: string }
