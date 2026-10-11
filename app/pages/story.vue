@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Story: how I came to the frontend. Draft copy, rewritten in ANA-80. */
-definePageMeta({ turn: 4, crumb: 'STORY' })
+definePageMeta({ turn: 4, crumb: 'STORY', stage: 'beside' })
 useSeoMeta({ title: 'Story' })
 </script>
 
 <template>
-  <FramedPanel kicker="04 · DRAFT COPY" title="Story" close-to="/">
+  <FramedPanel kicker="04 · DRAFT COPY" title="Story">
     <p>
       I grew up in Damascus, a city where craftsmen build patterns like the one
       behind this page out of thousands of small pieces, each one cut to fit.

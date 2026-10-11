@@ -192,7 +192,6 @@ describe('tab order', () => {
       'STORY',
       'CONTACT',
       'Sections',
-      'Close',
       'GitHub @ANASAZKOUL ↗, opens in a new tab'
     ])
   })

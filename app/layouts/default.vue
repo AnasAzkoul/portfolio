@@ -7,7 +7,9 @@
  * Below 900px the nav doesn't fit, so the section menu stands in for it.
  *
  * Pages steer it through definePageMeta: `turn` (0–5) turns the lattice,
- * `crumb` labels the footer breadcrumb.
+ * `crumb` labels the footer breadcrumb, and `stage` picks the stage layout:
+ * where the lattice stands beside the view from 1280px (see utils/stage.ts).
+ * The lattice glides there when the page changes.
  *
  * The view area centres the page and lets clicks through to the lattice's
  * stars; only the page's root element takes pointer events.
@@ -31,6 +33,8 @@ const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
 const crumbText = computed(
   () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`
 )
+const stage = computed(() => route.meta.stage ?? 'centre')
+const stageClasses = computed(() => stageParts[stage.value])
 
 // A case study opens over the Projects index, which keeps its own heading
 // but is inert underneath, so that heading is passed over.
@@ -96,30 +100,40 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
 
 <template>
   <div
+    :data-stage="stage"
     class="relative h-dvh overflow-hidden bg-[radial-gradient(circle_at_50%_44%,var(--color-bg1)_0%,var(--color-bg2)_46%,var(--color-bg3)_100%)] text-ink"
+    :class="stageClasses.stage"
   >
     <div
       data-lattice
       class="absolute inset-0 z-0 flex items-center justify-center [transition:opacity_1.6s_ease,scale_2s_ease] motion-reduce:scale-100 motion-reduce:opacity-100 motion-reduce:transition-none"
       :class="{ 'scale-[0.985] opacity-0': !latticeRevealed }"
     >
-      <!-- The whole circle is always on screen (the prototype drew it at 150%
-           of the height and cropped the ring). 96px of height is kept for the
-           mark, nav and breadcrumb, so the ring never runs under them. -->
-      <MosaicLattice
-        :turn="route.meta.turn"
-        class="size-[min(100dvh_-_96px,100vw)]"
-      />
+      <!-- Below 1280px the whole circle is always on screen, centred (the
+           prototype drew it at 150% of the height and cropped the ring), with
+           96px of height kept for the mark, nav and breadcrumb so the ring
+           never runs under them. From 1280px it stands where the stage
+           layout puts it, by its size and centre, and glides there. The
+           glide is on this wrapper; the lattice's own transition turns it. -->
+      <div
+        data-lattice-place
+        class="size-[min(100dvh_-_96px,100vw)] transition-[left,top,width,height,opacity,visibility] duration-1100 ease-settle motion-reduce:transition-none min-[1280px]:absolute min-[1280px]:top-[calc(var(--lattice-y)_-_var(--lattice-size)/2)] min-[1280px]:left-[calc(var(--lattice-x)_-_var(--lattice-size)/2)] min-[1280px]:size-(--lattice-size)"
+        :class="stageClasses.lattice"
+      >
+        <MosaicLattice :turn="route.meta.turn" class="size-full" />
+      </div>
     </div>
     <div
       data-overlay="glow"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_50%_46%,--alpha(var(--color-bg2)/92%)_0%,--alpha(var(--color-bg2)/55%)_16%,transparent_34%)]"
+      :class="stageClasses.glow"
     />
     <div
       data-overlay="vignette"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_50%_46%,transparent_52%,var(--color-bg3)_92%)]"
+      :class="stageClasses.vignette"
     />
 
     <!-- Ahead of the view in the DOM, so Tab reads the page as it looks:
@@ -159,6 +173,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       ref="viewArea"
       data-view-area
       class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] [--view-height:calc(100dvh_-_160px)] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6 max-[720px]:[--view-height:calc(100dvh_-_94px)]"
+      :class="stageClasses.view"
       :inert="menuOpen"
     >
       <slot />

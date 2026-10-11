@@ -1,5 +1,6 @@
 // What each page tells the default layout through definePageMeta.
 import type { LatticeTurn } from '~/utils/lattice'
+import type { Stage } from '~/utils/stage'
 
 declare module '#app' {
   interface PageMeta {
@@ -7,5 +8,7 @@ declare module '#app' {
     turn?: LatticeTurn
     /** Footer breadcrumb label, e.g. "PROJECTS". Defaults to "SELECT A SECTION". */
     crumb?: string
+    /** How the view and the lattice share the screen from 1280px. Defaults to `centre`. */
+    stage?: Stage
   }
 }

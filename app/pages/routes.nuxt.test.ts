@@ -10,13 +10,14 @@ function visit(route: string) {
 
 type Wrapper = Awaited<ReturnType<typeof visit>>
 
-// What the layout shows for the page: how far the lattice turned, and the
-// breadcrumb.
+// What the layout shows for the page: how far the lattice turned, the
+// breadcrumb, and the stage layout it sets the view and the lattice in.
 function stage(wrapper: Wrapper) {
   const style = wrapper.find('[data-lattice] svg').attributes('style') ?? ''
   return {
     turn: style.match(/--turn: ([^;]+)/)?.[1],
-    crumb: wrapper.find('[data-crumb]').text()
+    crumb: wrapper.find('[data-crumb]').text(),
+    layout: wrapper.find('[data-stage]').attributes('data-stage')
   }
 }
 
@@ -43,11 +44,12 @@ describe('home', () => {
     await vi.waitFor(() => expect(name.classes()).not.toContain('opacity-0'))
   })
 
-  it('leaves the lattice unturned and invites a choice', async () => {
+  it('leaves the lattice unturned and centred, and invites a choice', async () => {
     const wrapper = await visit('/')
     expect(stage(wrapper)).toEqual({
       turn: '0deg',
-      crumb: '— SELECT A SECTION —'
+      crumb: '— SELECT A SECTION —',
+      layout: 'centre'
     })
   })
 })
@@ -87,19 +89,20 @@ describe('experience', () => {
     ])
   })
 
-  it('opens in a panel that closes back home', async () => {
+  it('opens in a panel with no close link', async () => {
     const wrapper = await visit('/experience')
     const panel = wrapper.find('section')
     expect(panel.find('h2').text()).toBe('Experience')
     expect(panel.find('header').text()).toContain('01 · WORK EXPERIENCE')
-    expect(panel.find('header a').attributes('href')).toBe('/')
+    expect(panel.find('header a').exists()).toBe(false)
   })
 
-  it('turns the lattice one step and labels the breadcrumb', async () => {
+  it('turns the lattice one step, labels the breadcrumb and sets the view in focus', async () => {
     const wrapper = await visit('/experience')
     expect(stage(wrapper)).toEqual({
       turn: '22.5deg',
-      crumb: '— EXPERIENCE —'
+      crumb: '— EXPERIENCE —',
+      layout: 'focus'
     })
   })
 })
@@ -202,9 +205,13 @@ describe('projects', () => {
     )
   })
 
-  it('turns the lattice two steps and labels the breadcrumb', async () => {
+  it('turns the lattice two steps, labels the breadcrumb and sinks the lattice to the horizon', async () => {
     const wrapper = await visit('/projects')
-    expect(stage(wrapper)).toEqual({ turn: '45deg', crumb: '— PROJECTS —' })
+    expect(stage(wrapper)).toEqual({
+      turn: '45deg',
+      crumb: '— PROJECTS —',
+      layout: 'horizon'
+    })
   })
 
   it('leaves the index open while no project is', async () => {
@@ -281,7 +288,11 @@ describe('a project', () => {
 
   it('keeps the lattice and breadcrumb where Projects left them', async () => {
     const wrapper = await visit('/projects/learnflow')
-    expect(stage(wrapper)).toEqual({ turn: '45deg', crumb: '— PROJECTS —' })
+    expect(stage(wrapper)).toEqual({
+      turn: '45deg',
+      crumb: '— PROJECTS —',
+      layout: 'horizon'
+    })
   })
 
   it('closes back to all projects', async () => {
@@ -312,17 +323,17 @@ describe.each([
     '— CONTACT —'
   ]
 ])('%s', (route, title, kicker, angle, crumb) => {
-  it('opens in a panel that closes back home', async () => {
+  it('opens in a panel with no close link', async () => {
     const wrapper = await visit(route)
     const panel = wrapper.find('section')
     expect(panel.find('h2').text()).toBe(title)
     expect(panel.find('header').text()).toContain(kicker)
-    expect(panel.find('header a').attributes('href')).toBe('/')
+    expect(panel.find('header a').exists()).toBe(false)
   })
 
-  it(`turns the lattice ${angle} and labels the breadcrumb`, async () => {
+  it(`turns the lattice ${angle}, labels the breadcrumb and steps the lattice beside the view`, async () => {
     const wrapper = await visit(route)
-    expect(stage(wrapper)).toEqual({ turn: angle, crumb })
+    expect(stage(wrapper)).toEqual({ turn: angle, crumb, layout: 'beside' })
   })
 })
 

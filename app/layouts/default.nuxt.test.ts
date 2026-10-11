@@ -51,8 +51,52 @@ describe('default layout', () => {
 
   it('fits the whole lattice on screen, clear of the top and bottom chrome', async () => {
     const wrapper = await mountAt('/')
-    expect(wrapper.find('[data-lattice] svg').classes()).toContain(
+    expect(wrapper.find('[data-lattice-place]').classes()).toContain(
       'size-[min(100dvh_-_96px,100vw)]'
+    )
+  })
+
+  it.each([
+    ['/', 'centre'],
+    ['/experience', 'focus'],
+    ['/projects', 'horizon'],
+    ['/projects/learnflow', 'horizon'],
+    ['/contact', 'beside']
+  ])('sets the stage layout from the page meta on %s', async (route, stage) => {
+    const wrapper = await mountAt(route)
+    expect(wrapper.attributes('data-stage')).toBe(stage)
+  })
+
+  it('from 1280px, stands the lattice where the stage layout puts it, and glides it there', async () => {
+    const wrapper = await mountAt('/contact')
+    expect(wrapper.classes()).toContain(
+      '[--lattice-size:min(100dvh_-_160px,46vw)]'
+    )
+    expect(wrapper.find('[data-lattice-place]').classes()).toEqual(
+      expect.arrayContaining([
+        'min-[1280px]:absolute',
+        'min-[1280px]:size-(--lattice-size)',
+        'transition-[left,top,width,height,opacity,visibility]',
+        'motion-reduce:transition-none'
+      ])
+    )
+  })
+
+  it('in focus, fades the lattice away from 1280px', async () => {
+    const focus = await mountAt('/experience')
+    expect(focus.find('[data-lattice-place]').classes()).toContain(
+      'min-[1280px]:opacity-0'
+    )
+    const centre = await mountAt('/')
+    expect(centre.find('[data-lattice-place]').classes()).not.toContain(
+      'min-[1280px]:opacity-0'
+    )
+  })
+
+  it('over the horizon, stands the view at the top from 1280px', async () => {
+    const wrapper = await mountAt('/projects')
+    expect(wrapper.find('[data-view-area]').classes()).toContain(
+      'min-[1280px]:justify-start'
     )
   })
 

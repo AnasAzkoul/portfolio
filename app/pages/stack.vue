@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Stack: the tools I work with, grouped as on the CV. */
-definePageMeta({ turn: 3, crumb: 'STACK' })
+definePageMeta({ turn: 3, crumb: 'STACK', stage: 'beside' })
 useSeoMeta({ title: 'Stack' })
 
 const groups = [
@@ -44,7 +44,7 @@ const groups = [
 </script>
 
 <template>
-  <FramedPanel kicker="03 · TOOLS OF THE CRAFT" title="Stack" close-to="/">
+  <FramedPanel kicker="03 · TOOLS OF THE CRAFT" title="Stack">
     <template v-for="group in groups" :key="group.area">
       <h3>{{ group.area }}</h3>
       <div class="flex flex-wrap gap-2">

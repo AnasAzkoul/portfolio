@@ -12,6 +12,10 @@ _Avoid_: Highlight, accent colour, pop
 The 8-point gold star set with a project's Jewel accent, shown beside its kicker in the Projects view's preview. Each project has its own jewel.
 _Avoid_: Icon, badge, project logo
 
+**Stage layout**:
+How a view and the lattice share the screen from 1280px wide, set per page. _Centre_: the lattice centred behind the view (Home). _Focus_: the lattice fades away and the view is one centred, unframed column (Experience). _Beside_: the lattice steps to the right and the view stands unframed on the left, lined up with the mark (Stack, Story, Contact). _Horizon_: the lattice sinks to an arch at the foot of the screen and the view stands above it (Projects and its case studies). Below 1280px every view is Centre.
+_Avoid_: Variant (that's a panel's width), mode, theme
+
 **Section menu**:
 The full-screen numbered index of the site's sections that stands in for the nav on screens narrower than 900px. It opens from a star button opposite the mark; while it is open, the star's two squares flatten into an X. The dot at the star's centre is always a gold Jewel accent that belongs to no project, so the star is not an Inlaid star.
 _Avoid_: Hamburger menu, drawer, mobile nav

@@ -16,7 +16,7 @@
  */
 import { framedPanel } from '~/components/FramedPanel.variants'
 
-definePageMeta({ turn: 2, crumb: 'PROJECTS' })
+definePageMeta({ turn: 2, crumb: 'PROJECTS', stage: 'horizon' })
 useSeoMeta({ title: 'Projects' })
 
 const route = useRoute()

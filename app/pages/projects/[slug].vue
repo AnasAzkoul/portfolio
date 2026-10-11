@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
  * One project's case study, opened over the Projects index as its child
- * route. It keeps the Projects lattice turn and breadcrumb, so the lattice
- * stays put when a project opens.
+ * route. It keeps the Projects lattice turn, breadcrumb and stage layout, so
+ * the lattice stays put when a project opens.
  *
  * A project with a repo links its source, in a new tab.
  *
@@ -11,6 +11,7 @@
 definePageMeta({
   turn: 2,
   crumb: 'PROJECTS',
+  stage: 'horizon',
   middleware: (to) => {
     if (!findProject(String(to.params.slug))) {
       return navigateTo('/projects', { replace: true })

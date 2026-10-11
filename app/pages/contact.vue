@@ -3,7 +3,7 @@
  * Contact: one row per channel. A channel without its address yet shows a
  * draft note in place of the handle and isn't a link.
  */
-definePageMeta({ turn: 5, crumb: 'CONTACT' })
+definePageMeta({ turn: 5, crumb: 'CONTACT', stage: 'beside' })
 useSeoMeta({ title: 'Contact' })
 
 type Channel =
@@ -30,7 +30,6 @@ const handleType = 'self-center font-mono text-[11px] tracking-[2px]'
   <FramedPanel
     kicker="05 · OPEN TO FRONTEND ROLES IN NL"
     title="Contact"
-    close-to="/"
     variant="narrow"
   >
     <template v-for="channel in channels" :key="channel.name">

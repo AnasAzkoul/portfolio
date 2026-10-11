@@ -146,23 +146,71 @@ describe('FramedPanel', () => {
     expect(wrapper.find('section').classes()).toContain(width)
   })
 
-  const besideLattice =
-    'min-[1280px]:translate-x-[calc(44px_-_(100vw_-_100%)/2)]'
-
-  it.each([undefined, 'default', 'narrow'] as const)(
-    'variant %s moves beside the lattice on wide screens',
-    async (variant) => {
-      const wrapper = await mountSuspended(FramedPanel, {
-        props: { ...props, variant }
-      })
-      expect(wrapper.find('section').classes()).toContain(besideLattice)
-    }
-  )
-
-  it('variant fluid stays where its container puts it', async () => {
+  it('has no close link without closeTo', async () => {
     const wrapper = await mountSuspended(FramedPanel, {
-      props: { ...props, variant: 'fluid' }
+      props: { kicker: props.kicker, title: props.title }
     })
-    expect(wrapper.find('section').classes()).not.toContain(besideLattice)
+    expect(wrapper.find('header a').exists()).toBe(false)
+  })
+
+  // From 1280px a panel takes its page's stage layout (definePageMeta's
+  // `stage`), so each case mounts it on a page that sets one.
+  describe("from 1280px, in its page's stage layout", () => {
+    const unframed = 'min-[1280px]:bg-transparent'
+    const mountOn = (route: string) =>
+      mountSuspended(FramedPanel, { props, route })
+
+    it('stays framed where its page is centred', async () => {
+      const wrapper = await mountOn('/')
+      expect(wrapper.find('section').classes()).not.toContain(unframed)
+      expect(wrapper.find('[data-focus-ornament]').exists()).toBe(false)
+    })
+
+    it('in focus, is one centred column with no frame', async () => {
+      const wrapper = await mountOn('/experience')
+      expect(wrapper.find('section').classes()).toEqual(
+        expect.arrayContaining([
+          unframed,
+          'min-[1280px]:w-[min(680px,100%_-_88px)]'
+        ])
+      )
+    })
+
+    it("in focus, sets the lattice's star over the title and a diamond rule under it", async () => {
+      const wrapper = await mountOn('/experience')
+      const ornaments = wrapper.findAll('header [data-focus-ornament]')
+      expect(ornaments.map((o) => o.attributes('data-focus-ornament'))).toEqual(
+        ['star', 'rule']
+      )
+      for (const o of ornaments)
+        expect(o.attributes('aria-hidden')).toBe('true')
+    })
+
+    it('beside the lattice, lines up with the mark, with no frame', async () => {
+      const wrapper = await mountOn('/stack')
+      expect(wrapper.find('section').classes()).toEqual(
+        expect.arrayContaining([unframed, 'min-[1280px]:self-start'])
+      )
+      for (const corner of wrapper.findAll('[data-ornament]')) {
+        expect(corner.classes()).toContain('min-[1280px]:hidden')
+      }
+    })
+
+    it('with no frame, fades its body out at the scroll edges', async () => {
+      const wrapper = await mountOn('/story')
+      expect(wrapper.find('[data-panel-body]').classes().join(' ')).toMatch(
+        /min-\[1280px\]:\[mask-image:/
+      )
+    })
+
+    it('over the horizon, stays framed and ends at the arch', async () => {
+      const wrapper = await mountOn('/projects/learnflow')
+      expect(wrapper.find('section').classes()).toEqual(
+        expect.arrayContaining([
+          'min-[1280px]:h-[calc(100dvh_-_var(--lattice-rise)_-_30px)]'
+        ])
+      )
+      expect(wrapper.find('section').classes()).not.toContain(unframed)
+    })
   })
 })

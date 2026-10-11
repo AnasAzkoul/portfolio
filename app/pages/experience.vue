@@ -4,7 +4,7 @@
  * languages, worded as on the CV. Gaps in the CV show as draft notes: a
  * role without its `start` yet, the degree's details, other languages.
  */
-definePageMeta({ turn: 1, crumb: 'EXPERIENCE' })
+definePageMeta({ turn: 1, crumb: 'EXPERIENCE', stage: 'focus' })
 useSeoMeta({ title: 'Experience' })
 
 interface Role {
@@ -55,7 +55,7 @@ const item =
 </script>
 
 <template>
-  <FramedPanel kicker="01 · WORK EXPERIENCE" title="Experience" close-to="/">
+  <FramedPanel kicker="01 · WORK EXPERIENCE" title="Experience">
     <h3>Scala · Sittard, Netherlands</h3>
     <div v-for="role in roles" :key="role.title" data-role class="mt-5">
       <h4 class="text-[22px] leading-tight font-medium">
