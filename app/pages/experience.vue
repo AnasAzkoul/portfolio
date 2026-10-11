@@ -51,7 +51,7 @@ const languages = [
 
 // A list item with a small gold diamond for its bullet.
 const item =
-  "relative pl-5 text-[17px] leading-[1.5] before:absolute before:top-[0.6em] before:left-0.5 before:size-[5px] before:rotate-45 before:border before:border-gold before:content-['']"
+  "relative max-w-measure pl-5 text-[20px] leading-[1.5] font-medium before:absolute before:top-[0.6em] before:left-0.5 before:size-[5px] before:rotate-45 before:border before:border-gold before:content-['']"
 </script>
 
 <template>

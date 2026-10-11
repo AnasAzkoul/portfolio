@@ -32,11 +32,12 @@ export const framedPanel = cva(
       // below 1280px.
       stage: {
         centre: '',
-        // One centred column, short enough to read without losing the line.
+        // One centred column, as wide as the reading measure, so the text
+        // sits square under the title.
         focus: [
           unframed,
           fullHeight,
-          'min-[1280px]:w-[min(680px,100%_-_88px)]'
+          'min-[1280px]:w-[min(var(--container-measure),100%_-_88px)]'
         ],
         // On the left, lined up with the mark (the view area's 24px padding
         // and 20px more make 44px), leaving a 64px gap before the lattice.

@@ -153,7 +153,7 @@ onBeforeUnmount(() => bodyObserver?.disconnect())
       data-panel-body
       :tabindex="bodyScrolls ? 0 : undefined"
       :class="framedPanelBody({ stage })"
-      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink focus-visible:outline-1 focus-visible:-outline-offset-8 focus-visible:outline-gold max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-7 [&_h3]:mb-2 [&_h3]:text-[22px] [&_h3]:leading-tight [&_h3]:font-semibold [&_h3]:text-gold [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
+      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink lining-nums focus-visible:outline-1 focus-visible:-outline-offset-8 focus-visible:outline-gold max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-7 [&_h3]:mb-2 [&_h3]:text-[22px] [&_h3]:leading-tight [&_h3]:font-semibold [&_h3]:text-gold [&_p]:max-w-measure [&_p]:text-[20px] [&_p]:leading-[1.55] [&_p]:font-medium [&_p+p]:mt-3"
     >
       <slot />
     </div>

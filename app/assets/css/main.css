@@ -37,6 +37,11 @@
   --default-font-family: var(--font-serif);
   --default-mono-font-family: var(--font-mono);
 
+  /* The reading measure (`max-w-measure`): about 62 characters a line of the
+     20px body text. Not 62ch: Cormorant's `ch`, the width of a 0, is wider
+     than its average letter, so 62ch would let a line run to about 73. */
+  --container-measure: 500px;
+
   /* The prototype's curve for things settling into place: a quick start, a long ease out. */
   --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }

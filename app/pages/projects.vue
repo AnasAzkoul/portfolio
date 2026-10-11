@@ -107,7 +107,9 @@ const rowDelay = (i: number) => 250 + i * 80
           <h3 class="text-[clamp(30px,3.4vw,42px)] leading-none font-medium">
             {{ preview.name }}
           </h3>
-          <p class="mt-5 text-[19px] leading-[1.55] text-ink">
+          <p
+            class="mt-5 text-[20px] leading-[1.55] font-medium text-ink lining-nums"
+          >
             {{ preview.context.text }}
             <DraftNote v-if="preview.context.todo">
               {{ preview.context.todo }}
