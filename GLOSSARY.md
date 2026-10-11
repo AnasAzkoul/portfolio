@@ -9,7 +9,7 @@ A small stone inlaid in the pattern, in madder red, pearl, jade green or gold, s
 _Avoid_: Highlight, accent colour, pop
 
 **Inlaid star**:
-The 8-point gold star set with a project's Jewel accent, shown beside its kicker in the Work view's preview. Each project has its own jewel.
+The 8-point gold star set with a project's Jewel accent, shown beside its kicker in the Projects view's preview. Each project has its own jewel.
 _Avoid_: Icon, badge, project logo
 
 **Section menu**:

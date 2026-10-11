@@ -1,8 +1,8 @@
 /** One of the site's top-level sections. */
 export interface Section {
-  /** Label in the nav, e.g. "WORK". */
+  /** Label in the nav, e.g. "PROJECTS". */
   label: string
-  /** Name in the section menu, e.g. "Work". */
+  /** Name in the section menu, e.g. "Projects". */
   name: string
   /** Mono line under the name in the section menu. */
   subtitle: string
@@ -15,7 +15,18 @@ export interface Section {
  * the menu numbers each one by its place here.
  */
 export const sections: readonly Section[] = [
-  { label: 'WORK', name: 'Work', subtitle: 'SELECTED WORK', to: '/work' },
+  {
+    label: 'EXPERIENCE',
+    name: 'Experience',
+    subtitle: 'WORK EXPERIENCE',
+    to: '/experience'
+  },
+  {
+    label: 'PROJECTS',
+    name: 'Projects',
+    subtitle: 'SELECTED PROJECTS',
+    to: '/projects'
+  },
   {
     label: 'STACK',
     name: 'Stack',

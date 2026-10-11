@@ -39,7 +39,8 @@ describe('MosaicLattice', () => {
     [1, '22.5deg'],
     [2, '45deg'],
     [3, '67.5deg'],
-    [4, '90deg']
+    [4, '90deg'],
+    [5, '112.5deg']
   ] as const)('turns %s sections to %s', async (turn, angle) => {
     const wrapper = await mountSuspended(MosaicLattice, { props: { turn } })
     expect(wrapper.find('svg').attributes('style')).toContain(

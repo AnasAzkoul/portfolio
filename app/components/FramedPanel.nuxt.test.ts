@@ -36,11 +36,15 @@ describe('FramedPanel', () => {
 
   it('takes a custom close label', async () => {
     const wrapper = await mountSuspended(FramedPanel, {
-      props: { ...props, closeTo: '/work', closeLabel: 'Back to all work' }
+      props: {
+        ...props,
+        closeTo: '/projects',
+        closeLabel: 'Back to all projects'
+      }
     })
     const close = wrapper.find('header a')
-    expect(close.attributes('href')).toBe('/work')
-    expect(close.attributes('aria-label')).toBe('Back to all work')
+    expect(close.attributes('href')).toBe('/projects')
+    expect(close.attributes('aria-label')).toBe('Back to all projects')
   })
 
   it('puts the default slot in a body that scrolls on its own', async () => {

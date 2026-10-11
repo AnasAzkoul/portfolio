@@ -4,3 +4,20 @@
 
 [build.environment]
   NODE_VERSION = "24"
+
+# Work became Projects (ANA-93). LearnFlow is the only project that kept its
+# slug; anything else under the old /work goes to the Projects index.
+[[redirects]]
+  from = "/work/learnflow"
+  to = "/projects/learnflow"
+  status = 301
+
+[[redirects]]
+  from = "/work"
+  to = "/projects"
+  status = 301
+
+[[redirects]]
+  from = "/work/*"
+  to = "/projects"
+  status = 301

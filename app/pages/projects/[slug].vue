@@ -1,17 +1,19 @@
 <script setup lang="ts">
 /**
- * One project's case study, opened over the Work grid as its child route.
- * It keeps Work's lattice turn and breadcrumb, so the lattice stays put when
- * a project opens.
+ * One project's case study, opened over the Projects index as its child
+ * route. It keeps the Projects lattice turn and breadcrumb, so the lattice
+ * stays put when a project opens.
  *
- * An unknown slug goes back to /work.
+ * A project with a repo links its source, in a new tab.
+ *
+ * An unknown slug goes back to /projects.
  */
 definePageMeta({
-  turn: 1,
-  crumb: 'WORK',
+  turn: 2,
+  crumb: 'PROJECTS',
   middleware: (to) => {
     if (!findProject(String(to.params.slug))) {
-      return navigateTo('/work', { replace: true })
+      return navigateTo('/projects', { replace: true })
     }
   }
 })
@@ -26,14 +28,17 @@ const passages = computed(() => [
   { heading: 'What I did', passage: project.value.did },
   { heading: 'Outcome', passage: project.value.outcome }
 ])
+
+// Shown without the scheme, e.g. "github.com/AnasAzkoul/martin-portfolio".
+const repoLabel = computed(() => project.value.repo?.replace(/^https:\/\//, ''))
 </script>
 
 <template>
   <FramedPanel
     :kicker="project.kicker"
     :title="project.name"
-    close-to="/work"
-    close-label="Back to all work"
+    close-to="/projects"
+    close-label="Back to all projects"
   >
     <template v-for="{ heading, passage } in passages" :key="heading">
       <h3>{{ heading }}</h3>
@@ -46,5 +51,17 @@ const passages = computed(() => [
     <div class="flex flex-wrap gap-2">
       <Chip v-for="item in project.stack" :key="item">{{ item }}</Chip>
     </div>
+    <template v-if="project.repo">
+      <h3>Source</h3>
+      <a
+        data-repo
+        :href="project.repo"
+        target="_blank"
+        rel="noopener"
+        class="font-mono text-[12px] tracking-[2px] text-ink-dim no-underline transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-none"
+      >
+        {{ repoLabel }} ↗<span class="sr-only">, opens in a new tab</span>
+      </a>
+    </template>
   </FramedPanel>
 </template>

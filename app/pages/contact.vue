@@ -3,7 +3,7 @@
  * Contact: one row per channel. A channel without its address yet shows a
  * draft note in place of the handle and isn't a link.
  */
-definePageMeta({ turn: 4, crumb: 'CONTACT' })
+definePageMeta({ turn: 5, crumb: 'CONTACT' })
 
 type Channel =
   | { name: string; href: string; handle: string }
@@ -27,7 +27,7 @@ const handleType = 'self-center font-mono text-[11px] tracking-[2px]'
 
 <template>
   <FramedPanel
-    kicker="04 · OPEN TO FRONTEND ROLES IN NL"
+    kicker="05 · OPEN TO FRONTEND ROLES IN NL"
     title="Contact"
     close-to="/"
     variant="narrow"

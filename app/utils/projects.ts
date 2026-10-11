@@ -10,12 +10,12 @@ export interface Passage {
 }
 
 export interface Project {
-  /** The project's URL segment under /work. */
+  /** The project's URL segment under /projects. */
   slug: string
   name: string
-  /** Mono line above the title, e.g. "01 · QUINTET · SCALA". */
+  /** Mono line above the title, e.g. "01 · PERSONAL PROJECT". */
   kicker: string
-  /** Short mono stack line, e.g. "NUXT 4 · CLAUDE CODE". */
+  /** Short mono stack line, e.g. "NEXT.JS · TS · TAILWIND". */
   meta: string
   /** Set in the inlaid star by the project's kicker. */
   jewel: Jewel
@@ -24,75 +24,16 @@ export interface Project {
   did: Passage
   outcome: Passage
   stack: string[]
+  /** The source repository's URL, linked from the case study. */
+  repo?: string
 }
 
 // Draft copy from the prototype; it moves to Nuxt Content in ANA-74.
 export const projects: readonly Project[] = [
   {
-    slug: 'variant-system',
-    name: 'Variant System',
-    kicker: '01 · QUINTET · SCALA',
-    meta: 'VUE · NUXT · TS · CVA',
-    jewel: 'red',
-    context: {
-      text: "Quintet is Scala's menu-board platform for quick-service restaurants: a canvas-based design app and a set of self-order terminals, built in TypeScript and Nuxt. Other developers build their screens on its library of atomic UI components."
-    },
-    problem: {
-      text: "Component variants and sizes were handled with long if/switch chains, sometimes inside a component's script block. Every new variant meant another branch, and nothing stopped a component from being used with an invalid combination."
-    },
-    did: {
-      text: 'I introduced class-variance-authority to the codebase. Variant logic moved into dedicated TypeScript files, and the variants were exported as TS types, so misuse shows up in the editor instead of on screen. Alongside that I rebuilt a large part of the shared atomic component library other developers build on, and wrote its documentation.'
-    },
-    outcome: {
-      text: "Shipped to production; the pattern wasn't in the codebase before, and it made the components reusable and scalable.",
-      todo: 'add: how many components use it now, or what it changed for the team'
-    },
-    stack: ['Vue 3', 'Nuxt', 'TypeScript', 'CVA']
-  },
-  {
-    slug: 'nuxt-4-migration',
-    name: 'Nuxt 3 → 4 Migration',
-    kicker: '02 · QUINTET · SCALA',
-    meta: 'NUXT 4 · CLAUDE CODE',
-    jewel: 'pearl',
-    context: {
-      text: 'One of my last Quintet tasks: moving the platform from Nuxt 3 to Nuxt 4.'
-    },
-    problem: {
-      text: 'A framework major-version upgrade across a multi-app production codebase.',
-      todo: 'add: the breaking changes that mattered most'
-    },
-    did: {
-      text: "I carried out the migration inside an AI-assisted workflow with Claude Code, following a process defined by the team's senior developer. I drove the migration, reviewed the generated changes and resolved the issues it turned up.",
-      todo: 'add: one decision you made'
-    },
-    outcome: { todo: 'add: result, issues found and fixed' },
-    stack: ['Nuxt 4', 'Vue 3', 'TypeScript', 'Claude Code']
-  },
-  {
-    slug: 'white-label-terminals',
-    name: 'White-label Terminals',
-    kicker: '03 · QUINTET SOT · SCALA',
-    meta: 'THEMING · PAYMENTS',
-    jewel: 'green',
-    context: {
-      text: "Quintet's self-order terminals are the customer-facing kiosks, deployed for different restaurant brands."
-    },
-    problem: {
-      text: 'Each customer needed the kiosks in their own branding, and each had its own checkout process.'
-    },
-    did: {
-      text: "I re-skinned the entire terminal UI into a themeable system, so a customer's branding becomes configuration rather than a fork, and adapted the payment flows to fit different customers' checkout processes."
-    },
-    outcome: {
-      todo: 'add: number of brands, or what onboarding a new customer looks like now'
-    },
-    stack: ['Vue 3', 'Nuxt', 'TypeScript', 'Theming']
-  },
-  {
     slug: 'learnflow',
     name: 'LearnFlow',
-    kicker: '04 · PERSONAL PROJECT',
+    kicker: '01 · PERSONAL PROJECT',
     meta: 'NUXT · HONO · CLOUDFLARE · AI',
     jewel: 'gold',
     context: {
@@ -117,6 +58,28 @@ export const projects: readonly Project[] = [
       'Cloudflare',
       'Claude Managed Agents'
     ]
+  },
+  {
+    slug: 'client-portfolio',
+    name: 'Client Portfolio Website',
+    kicker: '02 · CLIENT PROJECT · 2022',
+    meta: 'NEXT.JS · TS · TAILWIND',
+    jewel: 'red',
+    repo: 'https://github.com/AnasAzkoul/martin-portfolio',
+    context: {
+      text: 'A portfolio-and-articles site I designed and built end to end for a client. It was my first production project.'
+    },
+    problem: {
+      text: 'The client wanted to publish articles without running a CMS, and to bring their legacy route-optimization visualizer into the new site: an interactive Travelling Salesman–style demo on a US map, written in vanilla JavaScript.'
+    },
+    did: {
+      text: "I built an MDX-based articles system, with frontmatter parsing and dynamic rendering, as a lightweight publishing workflow with no CMS. I ported the visualizer to TypeScript, rewriting it as typed classes and wrapping its imperative Canvas rendering in a custom React hook so it fits Next.js's lifecycle, with responsive resizing and click interaction."
+    },
+    outcome: {
+      text: 'Live and deployed.',
+      todo: 'add: live site link'
+    },
+    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MDX', 'Canvas']
   }
 ]
 

@@ -15,7 +15,7 @@
 const open = defineModel<boolean>('open', { default: false })
 
 defineProps<{
-  /** The current section's route, e.g. "/work"; its row is marked. */
+  /** The current section's route, e.g. "/projects"; its row is marked. */
   current: string
 }>()
 

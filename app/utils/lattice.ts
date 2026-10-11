@@ -1,7 +1,7 @@
 import { CENTER, girih, poly, pt, star } from './geometry'
 
-/** Which section the site is on (0–4); each section turns the lattice 22.5° further. */
-export type LatticeTurn = 0 | 1 | 2 | 3 | 4
+/** Which section the site is on (0–5); each section turns the lattice 22.5° further. */
+export type LatticeTurn = 0 | 1 | 2 | 3 | 4 | 5
 
 export interface LatticePath {
   d: string

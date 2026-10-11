@@ -51,8 +51,9 @@ describe('default layout', () => {
 
   it.each([
     ['/', '0deg'],
-    ['/work', '22.5deg'],
-    ['/story', '67.5deg']
+    ['/experience', '22.5deg'],
+    ['/projects', '45deg'],
+    ['/contact', '112.5deg']
   ])('turns the lattice by the page meta on %s', async (route, angle) => {
     const wrapper = await mountAt(route)
     expect(wrapper.find('[data-lattice] svg').attributes('style')).toContain(
@@ -61,7 +62,7 @@ describe('default layout', () => {
   })
 
   it('links the mark home', async () => {
-    const wrapper = await mountAt('/work')
+    const wrapper = await mountAt('/projects')
     const mark = wrapper.find('[data-mark]')
     expect(mark.attributes('href')).toBe('/')
     expect(mark.text()).toBe('A. AZKOUL · EST. DAMASCUS')
@@ -74,7 +75,8 @@ describe('default layout', () => {
     expect(
       nav.findAll('a').map((a) => [a.text(), a.attributes('href')])
     ).toEqual([
-      ['WORK', '/work'],
+      ['EXPERIENCE', '/experience'],
+      ['PROJECTS', '/projects'],
       ['STACK', '/stack'],
       ['STORY', '/story'],
       ['CONTACT', '/contact']
@@ -83,8 +85,8 @@ describe('default layout', () => {
 
   it.each([
     ['/', []],
-    ['/work', ['WORK']],
-    ['/work/variant-system', ['WORK']],
+    ['/projects', ['PROJECTS']],
+    ['/projects/learnflow', ['PROJECTS']],
     ['/story', ['STORY']]
   ])('marks the current section on %s', async (route, current) => {
     const wrapper = await mountAt(route)
@@ -97,7 +99,7 @@ describe('default layout', () => {
 
   it.each([
     ['/', '— SELECT A SECTION —'],
-    ['/work/variant-system', '— WORK —']
+    ['/projects/learnflow', '— PROJECTS —']
   ])('shows the breadcrumb from the page meta on %s', async (route, text) => {
     const wrapper = await mountAt(route)
     const crumb = wrapper.find('[data-crumb]')
@@ -155,10 +157,11 @@ describe('section menu', () => {
           a.attributes('href')
         ])
     ).toEqual([
-      ['01', 'Work', 'SELECTED WORK', '/work'],
-      ['02', 'Stack', 'TOOLS OF THE CRAFT', '/stack'],
-      ['03', 'Story', 'HOW I CAME TO THE FRONTEND', '/story'],
-      ['04', 'Contact', 'OPEN TO FRONTEND ROLES IN NL', '/contact']
+      ['01', 'Experience', 'WORK EXPERIENCE', '/experience'],
+      ['02', 'Projects', 'SELECTED PROJECTS', '/projects'],
+      ['03', 'Stack', 'TOOLS OF THE CRAFT', '/stack'],
+      ['04', 'Story', 'HOW I CAME TO THE FRONTEND', '/story'],
+      ['05', 'Contact', 'OPEN TO FRONTEND ROLES IN NL', '/contact']
     ])
   })
 
@@ -173,8 +176,8 @@ describe('section menu', () => {
 
   it.each([
     ['/', []],
-    ['/work', ['Work']],
-    ['/work/variant-system', ['Work']],
+    ['/projects', ['Projects']],
+    ['/projects/learnflow', ['Projects']],
     ['/story', ['Story']]
   ])('marks the current section on %s', async (route, current) => {
     const wrapper = await openAt(route)
@@ -245,8 +248,8 @@ describe('section menu', () => {
   })
 
   it('closes when the current section is picked again', async () => {
-    const wrapper = await openAt('/work')
-    await menu(wrapper).find('a[href="/work"]').trigger('click')
+    const wrapper = await openAt('/projects')
+    await menu(wrapper).find('a[href="/projects"]').trigger('click')
     expect(menu(wrapper).exists()).toBe(false)
   })
 

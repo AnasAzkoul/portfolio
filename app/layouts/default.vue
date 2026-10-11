@@ -6,7 +6,7 @@
  *
  * Below 900px the nav doesn't fit, so the section menu stands in for it.
  *
- * Pages steer it through definePageMeta: `turn` (0–4) turns the lattice,
+ * Pages steer it through definePageMeta: `turn` (0–5) turns the lattice,
  * `crumb` labels the footer breadcrumb.
  *
  * The view area centres the page and lets clicks through to the lattice's
@@ -19,7 +19,7 @@ const route = useRoute()
 // While the section menu is open, the page behind it is inert.
 const menuOpen = ref(false)
 
-// A project under /work/… still counts as being on Work.
+// A project under /projects/… still counts as being on Projects.
 const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
 const crumbText = computed(
   () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`

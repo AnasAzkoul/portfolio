@@ -52,85 +52,142 @@ describe('home', () => {
   })
 })
 
-describe('work', () => {
+describe('experience', () => {
+  it('tells the Scala roles, then certifications, education and languages', async () => {
+    const wrapper = await visit('/experience')
+    const body = wrapper.find('[data-panel-body]')
+    expect(body.findAll('h3').map((h) => h.text())).toEqual([
+      'Scala · Sittard, Netherlands',
+      'Certifications',
+      'Education & Learning',
+      'Languages'
+    ])
+    expect(body.findAll('[data-role] h4').map((h) => h.text())).toEqual([
+      'Frontend Developer, Services (trainee track)',
+      'Technical Support Engineer'
+    ])
+    const bullets = body.findAll('[data-role]').map((r) => r.findAll('li'))
+    expect(bullets.map((b) => b.length)).toEqual([7, 2])
+    expect(bullets[0]![0]!.text()).toMatch(
+      /^Contributed production frontend code to Quintet/
+    )
+    expect(body.find('[data-certifications]').text()).toContain(
+      'Certified Vue.js Developer (Level I)'
+    )
+  })
+
+  it('marks the gaps in the CV as copy still to be written', async () => {
+    const wrapper = await visit('/experience')
+    const notes = wrapper.findAll('[data-draft-note]').map((n) => n.text())
+    expect(notes).toEqual([
+      '[add: start date]',
+      '[add: start date]',
+      '[add: degree, institution, year]',
+      '[add: Arabic and any other languages]'
+    ])
+  })
+
+  it('opens in a panel that closes back home', async () => {
+    const wrapper = await visit('/experience')
+    const panel = wrapper.find('section')
+    expect(panel.find('h2').text()).toBe('Experience')
+    expect(panel.find('header').text()).toContain('01 · WORK EXPERIENCE')
+    expect(panel.find('header a').attributes('href')).toBe('/')
+  })
+
+  it('turns the lattice one step and labels the breadcrumb', async () => {
+    const wrapper = await visit('/experience')
+    expect(stage(wrapper)).toEqual({
+      turn: '22.5deg',
+      crumb: '— EXPERIENCE —'
+    })
+  })
+})
+
+describe('projects', () => {
   it('lists each project under the title, linking to its case study', async () => {
-    const wrapper = await visit('/work')
-    expect(wrapper.find('[data-view-area] h2').text()).toBe('Selected Work')
-    const links = wrapper.findAll('[data-work-list] a')
+    const wrapper = await visit('/projects')
+    expect(wrapper.find('[data-view-area] h2').text()).toBe('Projects')
+    expect(wrapper.find('[data-projects-index]').text()).toContain(
+      '02 · SELECTED PROJECTS'
+    )
+    const links = wrapper.findAll('[data-projects-list] a')
     expect(
       links.map((a) => [
         a.find('[data-project-name]').text(),
         a.attributes('href')
       ])
     ).toEqual([
-      ['Variant System', '/work/variant-system'],
-      ['Nuxt 3 → 4 Migration', '/work/nuxt-4-migration'],
-      ['White-label Terminals', '/work/white-label-terminals'],
-      ['LearnFlow', '/work/learnflow']
+      ['LearnFlow', '/projects/learnflow'],
+      ['Client Portfolio Website', '/projects/client-portfolio']
     ])
   })
 
   it('previews the first project until another is picked', async () => {
-    const wrapper = await visit('/work')
-    const preview = wrapper.find('[data-work-preview]')
-    expect(preview.find('h3').text()).toBe('Variant System')
-    expect(preview.text()).toContain('01 · QUINTET · SCALA')
-    expect(preview.text()).toContain("Quintet is Scala's menu-board platform")
+    const wrapper = await visit('/projects')
+    const preview = wrapper.find('[data-projects-preview]')
+    expect(preview.find('h3').text()).toBe('LearnFlow')
+    expect(preview.text()).toContain('01 · PERSONAL PROJECT')
+    expect(preview.text()).toContain("An AI-powered learning platform I'm")
     expect(preview.findAll('[data-chip]').map((c) => c.text())).toEqual([
-      'Vue 3',
       'Nuxt',
-      'TypeScript',
-      'CVA'
+      'Hono',
+      'Drizzle',
+      'PostgreSQL',
+      'Better Auth',
+      'Cloudflare',
+      'Claude Managed Agents'
     ])
-    expect(preview.find('a').attributes('href')).toBe('/work/variant-system')
+    expect(preview.find('a').attributes('href')).toBe('/projects/learnflow')
   })
 
   it("sets the previewed project's jewel in an inlaid star by its kicker", async () => {
-    const wrapper = await visit('/work')
-    const star = () => wrapper.find('[data-work-preview] [data-inlaid-star]')
+    const wrapper = await visit('/projects')
+    const star = () =>
+      wrapper.find('[data-projects-preview] [data-inlaid-star]')
     expect(star().attributes('aria-hidden')).toBe('true')
-    expect(star().find('[data-jewel]').classes()).toContain('fill-red')
-    await wrapper.findAll('[data-work-list] a')[3]!.trigger('mouseenter')
     expect(star().find('[data-jewel]').classes()).toContain('fill-gold-hi')
+    await wrapper.findAll('[data-projects-list] a')[1]!.trigger('mouseenter')
+    expect(star().find('[data-jewel]').classes()).toContain('fill-red')
   })
 
   it('previews a project when the pointer moves onto it', async () => {
-    const wrapper = await visit('/work')
-    await wrapper.findAll('[data-work-list] a')[3]!.trigger('mouseenter')
-    const preview = wrapper.find('[data-work-preview]')
-    expect(preview.find('h3').text()).toBe('LearnFlow')
-    expect(preview.find('a').attributes('href')).toBe('/work/learnflow')
+    const wrapper = await visit('/projects')
+    await wrapper.findAll('[data-projects-list] a')[1]!.trigger('mouseenter')
+    const preview = wrapper.find('[data-projects-preview]')
+    expect(preview.find('h3').text()).toBe('Client Portfolio Website')
+    expect(preview.find('a').attributes('href')).toBe(
+      '/projects/client-portfolio'
+    )
   })
 
   it('previews a project when it takes keyboard focus', async () => {
-    const wrapper = await visit('/work')
-    await wrapper.findAll('[data-work-list] a')[2]!.trigger('focus')
-    expect(wrapper.find('[data-work-preview] h3').text()).toBe(
-      'White-label Terminals'
+    const wrapper = await visit('/projects')
+    await wrapper.findAll('[data-projects-list] a')[1]!.trigger('focus')
+    expect(wrapper.find('[data-projects-preview] h3').text()).toBe(
+      'Client Portfolio Website'
     )
   })
 
   it('marks the previewed project in the list', async () => {
-    const wrapper = await visit('/work')
-    const links = wrapper.findAll('[data-work-list] a')
+    const wrapper = await visit('/projects')
+    const links = wrapper.findAll('[data-projects-list] a')
     await links[1]!.trigger('mouseenter')
     expect(links.map((a) => a.attributes('data-previewed'))).toEqual([
       undefined,
-      '',
-      undefined,
-      undefined
+      ''
     ])
   })
 
-  it('turns the lattice one step and labels the breadcrumb', async () => {
-    const wrapper = await visit('/work')
-    expect(stage(wrapper)).toEqual({ turn: '22.5deg', crumb: '— WORK —' })
+  it('turns the lattice two steps and labels the breadcrumb', async () => {
+    const wrapper = await visit('/projects')
+    expect(stage(wrapper)).toEqual({ turn: '45deg', crumb: '— PROJECTS —' })
   })
 
   it('leaves the index open while no project is', async () => {
-    const wrapper = await visit('/work')
+    const wrapper = await visit('/projects')
     expect(
-      wrapper.find('[data-work-index]').attributes('inert')
+      wrapper.find('[data-projects-index]').attributes('inert')
     ).toBeUndefined()
     expect(wrapper.find('section').exists()).toBe(false)
   })
@@ -138,68 +195,97 @@ describe('work', () => {
 
 describe('a project', () => {
   it('opens in a panel over the index, which stays mounted but inert', async () => {
-    const wrapper = await visit('/work/variant-system')
+    const wrapper = await visit('/projects/client-portfolio')
     const panel = wrapper.find('section')
-    expect(panel.find('h2').text()).toBe('Variant System')
-    expect(panel.find('header').text()).toContain('01 · QUINTET · SCALA')
-    expect(wrapper.find('[data-work-index]').attributes('inert')).toBeDefined()
+    expect(panel.find('h2').text()).toBe('Client Portfolio Website')
+    expect(panel.find('header').text()).toContain('02 · CLIENT PROJECT · 2022')
+    expect(
+      wrapper.find('[data-projects-index]').attributes('inert')
+    ).toBeDefined()
   })
 
   it('tells the case study in fixed sections, then lists its stack', async () => {
-    const wrapper = await visit('/work/variant-system')
+    const wrapper = await visit('/projects/client-portfolio')
     const body = wrapper.find('[data-panel-body]')
     expect(body.findAll('h3').map((h) => h.text())).toEqual([
       'Context',
       'Problem',
       'What I did',
       'Outcome',
-      'Stack'
+      'Stack',
+      'Source'
     ])
-    expect(body.text()).toContain('I introduced class-variance-authority')
+    expect(body.text()).toContain('I built an MDX-based articles system')
     expect(body.findAll('[data-chip]').map((c) => c.text())).toEqual([
-      'Vue 3',
-      'Nuxt',
+      'Next.js',
+      'React',
       'TypeScript',
-      'CVA'
+      'Tailwind CSS',
+      'MDX',
+      'Canvas'
     ])
+  })
+
+  it('links its source in a new tab', async () => {
+    const wrapper = await visit('/projects/client-portfolio')
+    const repo = wrapper.find('[data-repo]')
+    expect(repo.attributes('href')).toBe(
+      'https://github.com/AnasAzkoul/martin-portfolio'
+    )
+    expect(repo.attributes('target')).toBe('_blank')
+    expect(repo.attributes('rel')).toBe('noopener')
+    expect(repo.text()).toBe(
+      'github.com/AnasAzkoul/martin-portfolio ↗, opens in a new tab'
+    )
+  })
+
+  it('shows no source section for a project without a repo', async () => {
+    const wrapper = await visit('/projects/learnflow')
+    expect(wrapper.find('[data-repo]').exists()).toBe(false)
+    expect(
+      wrapper
+        .find('[data-panel-body]')
+        .findAll('h3')
+        .map((h) => h.text())
+    ).not.toContain('Source')
   })
 
   it('marks copy still to be written', async () => {
-    const wrapper = await visit('/work/nuxt-4-migration')
+    const wrapper = await visit('/projects/client-portfolio')
     const notes = wrapper.findAll('[data-draft-note]').map((n) => n.text())
-    expect(notes).toContain('[add: result, issues found and fixed]')
+    expect(notes).toContain('[add: live site link]')
   })
 
-  it('keeps the lattice and breadcrumb where Work left them', async () => {
-    const wrapper = await visit('/work/learnflow')
-    expect(stage(wrapper)).toEqual({ turn: '22.5deg', crumb: '— WORK —' })
+  it('keeps the lattice and breadcrumb where Projects left them', async () => {
+    const wrapper = await visit('/projects/learnflow')
+    expect(stage(wrapper)).toEqual({ turn: '45deg', crumb: '— PROJECTS —' })
   })
 
-  it('closes back to all work', async () => {
-    const wrapper = await visit('/work/learnflow')
+  it('closes back to all projects', async () => {
+    const wrapper = await visit('/projects/learnflow')
     const close = wrapper.find('section header a')
-    expect(close.attributes('href')).toBe('/work')
-    expect(close.attributes('aria-label')).toBe('Back to all work')
+    expect(close.attributes('href')).toBe('/projects')
+    expect(close.attributes('aria-label')).toBe('Back to all projects')
   })
 
-  it('redirects an unknown project to all work', async () => {
-    const wrapper = await visit('/work/no-such-project')
-    expect(useRouter().currentRoute.value.fullPath).toBe('/work')
+  it('redirects an unknown project to all projects', async () => {
+    const wrapper = await visit('/projects/no-such-project')
+    expect(useRouter().currentRoute.value.fullPath).toBe('/projects')
     expect(wrapper.find('section').exists()).toBe(false)
     expect(
-      wrapper.find('[data-work-index]').attributes('inert')
+      wrapper.find('[data-projects-index]').attributes('inert')
     ).toBeUndefined()
   })
 })
 
 describe.each([
-  ['/stack', 'Stack', '02 · TOOLS OF THE CRAFT', '45deg', '— STACK —'],
-  ['/story', 'Story', '03 · DRAFT COPY', '67.5deg', '— STORY —'],
+  ['/stack', 'Stack', '03 · TOOLS OF THE CRAFT', '67.5deg', '— STACK —'],
+  ['/story', 'Story', '04 · DRAFT COPY', '90deg', '— STORY —'],
   [
     '/contact',
     'Contact',
-    '04 · OPEN TO FRONTEND ROLES IN NL',
-    '90deg',
+    '05 · OPEN TO FRONTEND ROLES IN NL',
+    '112.5deg',
     '— CONTACT —'
   ]
 ])('%s', (route, title, kicker, angle, crumb) => {
