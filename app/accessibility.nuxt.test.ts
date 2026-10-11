@@ -3,15 +3,32 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { enableAutoUnmount } from '@vue/test-utils'
 import App from '~/app.vue'
 
-// Mounted into the document, so focus really moves. Each test unmounts its
-// app, so no earlier one is left listening for keys or navigations.
+// Mounted into the document, so focus really moves, and with real
+// transitions (the test utils stub them), so a page transition plays as it
+// does for a visitor. Each test unmounts its app, so no earlier one is left
+// listening for keys or navigations.
 function visit(route: string) {
-  return mountSuspended(App, { route, attachTo: document.body })
+  return mountSuspended(App, {
+    route,
+    attachTo: document.body,
+    global: { stubs: { transition: false } }
+  })
 }
 
 enableAutoUnmount(afterEach)
 
+type Wrapper = Awaited<ReturnType<typeof visit>>
+
 const focusedText = () => document.activeElement?.textContent?.trim()
+
+// Everything the keyboard can reach: links, buttons and other tab stops.
+const tabbable = (wrapper: Wrapper) =>
+  wrapper
+    .findAll('a[href], button, [tabindex]')
+    .filter((el) => el.attributes('tabindex') !== '-1')
+
+// Long enough for anything that was going to happen to have happened.
+const settle = () => new Promise((resolve) => setTimeout(resolve, 50))
 
 describe('after each navigation', () => {
   it("moves focus to the new view's heading", async () => {
@@ -40,9 +57,26 @@ describe('after each navigation', () => {
     await vi.waitFor(() => expect(focusedText()).toBe('Story'))
   })
 
+  it('waits for a page transition to bring the new view in', async () => {
+    // An out-in transition: the old view leaves before the new one arrives.
+    const transitioned = useRouter()
+      .getRoutes()
+      .filter((r) => r.path === '/' || r.path === '/stack')
+    for (const r of transitioned) {
+      r.meta.pageTransition = { name: 'page', mode: 'out-in' }
+    }
+    try {
+      await visit('/')
+      await useRouter().push('/stack')
+      await vi.waitFor(() => expect(focusedText()).toBe('Stack'))
+    } finally {
+      for (const r of transitioned) delete r.meta.pageTransition
+    }
+  })
+
   it('leaves focus at the top of the document on the first load', async () => {
     await visit('/story')
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    await settle()
     expect(document.activeElement).toBe(document.body)
   })
 })
@@ -77,7 +111,7 @@ describe('Escape', () => {
   it('does nothing on Home', async () => {
     await visit('/')
     pressEscape()
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    await settle()
     expect(currentPath()).toBe('/')
   })
 
@@ -88,19 +122,15 @@ describe('Escape', () => {
     await vi.waitFor(() =>
       expect(wrapper.find('[data-section-menu]').exists()).toBe(false)
     )
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    await settle()
     expect(currentPath()).toBe('/stack')
   })
 })
 
 describe('focus styles', () => {
-  type Wrapper = Awaited<ReturnType<typeof visit>>
-
   // Everything the keyboard can reach that lacks the gold focus outline.
   const unoutlined = (wrapper: Wrapper) =>
-    wrapper
-      .findAll('a[href], button, [tabindex]')
-      .filter((el) => el.attributes('tabindex') !== '-1')
+    tabbable(wrapper)
       .filter(
         (el) =>
           !el.classes().includes('focus-visible:outline-1') ||
@@ -130,13 +160,9 @@ describe('focus styles', () => {
 })
 
 describe('tab order', () => {
-  type Wrapper = Awaited<ReturnType<typeof visit>>
-
   // What a screen reader names each stop the keyboard reaches, in order.
   const stops = (wrapper: Wrapper) =>
-    wrapper
-      .findAll('a[href], button, [tabindex]')
-      .filter((el) => el.attributes('tabindex') !== '-1')
+    tabbable(wrapper)
       .filter((el) => !el.element.closest('[inert]'))
       .map((el) => el.attributes('aria-label') ?? el.text())
 

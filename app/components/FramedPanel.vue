@@ -11,7 +11,8 @@
  * The body sets its own `h3` (mono gold section labels) and `p` (reading
  * copy) styles, so content can use plain elements.
  *
- * The title has tabindex="-1" so the view can move focus to it on open.
+ * The title has tabindex="-1" so the layout can move focus to it when the
+ * view opens.
  *
  * A body taller than the frame takes a tab stop of its own, so the keyboard
  * can scroll it even when it holds nothing focusable (not every browser

@@ -64,7 +64,7 @@ describe('FramedPanel', () => {
     // happy-dom lays nothing out, so this stands in for the browser: the body
     // measures `clientHeight` tall with content `scrollHeight` tall, and is
     // reported as soon as it's observed, as a browser does.
-    function layOut(clientHeight: number, scrollHeight: number) {
+    function stubLayout(clientHeight: number, scrollHeight: number) {
       vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(
         clientHeight
       )
@@ -92,7 +92,7 @@ describe('FramedPanel', () => {
     })
 
     it('takes a tab stop, so the keyboard can scroll it', async () => {
-      layOut(400, 900)
+      stubLayout(400, 900)
       const wrapper = await mountSuspended(FramedPanel, { props })
       await nextTick()
       const body = wrapper.find('[data-panel-body]')
@@ -106,7 +106,7 @@ describe('FramedPanel', () => {
     })
 
     it('takes none when it all fits', async () => {
-      layOut(400, 400)
+      stubLayout(400, 400)
       const wrapper = await mountSuspended(FramedPanel, { props })
       await nextTick()
       expect(

@@ -56,14 +56,25 @@ function onKeydown(event: KeyboardEvent) {
   navigateTo(closeTo.value)
 }
 
+// The new view is only in place once its page has loaded and, under an
+// out-in page transition, the old view has finished leaving. Nuxt's own
+// scroll behaviour waits for the same two things, `~transitionPromise`
+// included. Not awaited by the hook, so page loading isn't held up.
+async function focusViewHeadingOnArrival() {
+  await nuxtApp['~transitionPromise']
+  await nextTick()
+  focusViewHeading()
+}
+
 // Focus doesn't move on the first load: it starts at the top of the
-// document then. The new page is only in place once it has finished loading,
-// so wait for that, as Nuxt's own scroll behaviour does.
+// document then.
 let stopFocusingViews: (() => void) | undefined
 onMounted(() => {
   stopFocusingViews = router.afterEach((to, from, failure) => {
     if (failure || to.path === from.path) return
-    nuxtApp.hooks.hookOnce('page:loading:end', focusViewHeading)
+    nuxtApp.hooks.hookOnce('page:loading:end', () => {
+      focusViewHeadingOnArrival()
+    })
   })
   window.addEventListener('keydown', onKeydown)
 })
