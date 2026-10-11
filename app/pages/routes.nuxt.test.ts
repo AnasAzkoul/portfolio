@@ -55,6 +55,17 @@ describe('home', () => {
     expect(cta.attributes('href')).toBe('/projects')
   })
 
+  it('offers the CV as a PDF download beside the link to the projects', async () => {
+    const wrapper = await visit('/')
+    const cv = wrapper.find('[data-home-cv]')
+    expect(cv.text()).toBe('Download CV (PDF)')
+    expect(cv.attributes('href')).toBe('/anas-azkoul-cv.pdf')
+    expect(cv.attributes('download')).toBeDefined()
+    expect(cv.element.parentElement).toBe(
+      wrapper.find('[data-home-cta]').element.parentElement
+    )
+  })
+
   it('drops the ornament and tagline on a short screen, so the link still fits', async () => {
     const wrapper = await visit('/')
     expect(wrapper.find('[data-divider]').classes()).toContain('short:hidden')
@@ -393,13 +404,22 @@ describe('contact', () => {
     expect(github.attributes('rel')).toBe('noopener')
   })
 
+  it('offers the CV as a PDF download, in the same tab', async () => {
+    const wrapper = await visit('/contact')
+    const cv = wrapper.find('a[href="/anas-azkoul-cv.pdf"]')
+    expect(cv.text()).toBe('CV DOWNLOAD (PDF) ↓')
+    expect(cv.attributes('download')).toBeDefined()
+    expect(cv.attributes('target')).toBeUndefined()
+  })
+
   it("marks the channels that aren't filled in yet, without linking them", async () => {
     const wrapper = await visit('/contact')
     const rows = wrapper.findAll('[data-contact]')
     expect(rows.map((r) => [r.element.tagName, r.text()])).toEqual([
       ['DIV', 'Email [add address]'],
       ['A', 'GitHub @ANASAZKOUL ↗, opens in a new tab'],
-      ['DIV', 'LinkedIn [add profile]']
+      ['DIV', 'LinkedIn [add profile]'],
+      ['A', 'CV DOWNLOAD (PDF) ↓']
     ])
   })
 })

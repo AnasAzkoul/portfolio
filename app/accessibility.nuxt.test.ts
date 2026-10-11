@@ -221,7 +221,7 @@ describe('symbols', () => {
           .filter(
             (node) =>
               node.nodeType === Node.TEXT_NODE &&
-              /[→↗]/.test(node.textContent ?? '') &&
+              /[→↗↓]/.test(node.textContent ?? '') &&
               !element.closest('[aria-hidden="true"]')
           )
           .map((node) => node.textContent?.trim())
@@ -263,7 +263,8 @@ describe('tab order', () => {
       'Story',
       'Contact',
       'Sections',
-      'GitHub @ANASAZKOUL, opens in a new tab'
+      'GitHub @ANASAZKOUL, opens in a new tab',
+      'CV DOWNLOAD (PDF)'
     ])
   })
 

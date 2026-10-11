@@ -1,13 +1,14 @@
 <script setup lang="ts">
 /**
  * Contact: one row per channel. A channel without its address yet shows a
- * draft note in place of the handle and isn't a link.
+ * draft note in place of the handle and isn't a link. A link opens in a new
+ * tab, except a download, which saves the file where you are.
  */
 definePageMeta({ turn: 5, crumb: 'CONTACT', stage: 'beside' })
 useSeoMeta({ title: 'Contact' })
 
 type Channel =
-  | { name: string; href: string; handle: string }
+  | { name: string; href: string; handle: string; download?: true }
   | { name: string; todo: string }
 
 const channels: Channel[] = [
@@ -17,7 +18,8 @@ const channels: Channel[] = [
     href: 'https://github.com/AnasAzkoul',
     handle: '@ANASAZKOUL'
   },
-  { name: 'LinkedIn', todo: 'add profile' }
+  { name: 'LinkedIn', todo: 'add profile' },
+  { name: 'CV', href: cvHref, handle: 'DOWNLOAD (PDF)', download: true }
 ]
 
 const rowClass =
@@ -37,16 +39,22 @@ const handleType = 'self-center font-mono text-[12px] tracking-[1px]'
         v-if="'href' in channel"
         data-contact
         :href="channel.href"
-        target="_blank"
-        rel="noopener"
+        v-bind="
+          channel.download
+            ? { download: '' }
+            : { target: '_blank', rel: 'noopener' }
+        "
         :class="rowClass"
         class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-2 focus-visible:outline-gold"
       >
         {{ channel.name }}
         <span :class="handleType" class="text-ink-dim">
-          {{ channel.handle }}<span aria-hidden="true"> ↗</span>
+          {{ channel.handle
+          }}<span aria-hidden="true">{{ channel.download ? ' ↓' : ' ↗' }}</span>
         </span>
-        <span class="sr-only">, opens in a new tab</span>
+        <span v-if="!channel.download" class="sr-only"
+          >, opens in a new tab</span
+        >
       </a>
       <div v-else data-contact :class="rowClass">
         {{ channel.name }}

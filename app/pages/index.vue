@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * Home: the name at the heart of the lattice, with the eyebrow above it and
- * the role and tagline below.
+ * the role and tagline below; then the work I want, and the two next steps
+ * for a recruiter: the projects and the CV.
  *
  * It rises into place once, just after the first load, together with the
  * lattice. Coming back to Home later shows it at once.
@@ -22,6 +23,10 @@ const reveal = computed(() => [
   'transition-[opacity,translate] duration-1000 ease-[ease] motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none',
   { 'translate-y-2.5 opacity-0': !revealed.value }
 ])
+
+// The two next steps share one bordered look.
+const nextStep =
+  'inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold'
 </script>
 
 <template>
@@ -88,19 +93,18 @@ const reveal = computed(() => [
       Building production Nuxt apps at Scala. Open to frontend roles in the
       Netherlands.
     </p>
-    <!-- The wrapper rises in with the rest; the link keeps its own quick
+    <!-- The wrapper rises in with the rest; the links keep their own quick
          hover transition, free of the reveal's delay. -->
     <div
       class="mt-7 flex flex-wrap justify-center gap-3 delay-[1040ms] short:mt-4"
       :class="reveal"
     >
-      <NuxtLink
-        to="/projects"
-        data-home-cta
-        class="inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold"
-      >
+      <NuxtLink to="/projects" data-home-cta :class="nextStep">
         See projects
       </NuxtLink>
+      <a :href="cvHref" download data-home-cv :class="nextStep">
+        Download CV (PDF)
+      </a>
     </div>
   </div>
 </template>
