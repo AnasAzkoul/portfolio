@@ -32,6 +32,9 @@
   --font-mono: 'Space Mono', 'Courier New', monospace;
   --default-font-family: var(--font-serif);
   --default-mono-font-family: var(--font-mono);
+
+  /* The prototype's curve for things settling into place: a quick start, a long ease out. */
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 @layer base {
@@ -41,5 +44,41 @@
     /* The page canvas, so an overscroll or a frame before the stage paints is
        never white. */
     background-color: var(--color-bg3);
+  }
+}
+
+/* The transition between sections (`pageTransition` in nuxt.config.ts): the
+   old page fades and shrinks to .97, then the new one fades and grows back.
+   The prototype crossfaded two stacked views in about .85s; here one page
+   leaves before the next arrives, so each leg is shorter to keep the beat
+   close to that. */
+@layer components {
+  .page-leave-active {
+    transition:
+      opacity 0.3s ease,
+      scale 0.3s ease;
+  }
+  .page-enter-active {
+    transition:
+      opacity 0.5s ease,
+      scale 0.6s var(--ease-settle);
+  }
+  .page-enter-from,
+  .page-leave-to {
+    opacity: 0;
+    scale: 0.97;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-enter-active,
+    .page-leave-active {
+      transition: none;
+    }
+    /* No transition means no fade, so don't dip to the from/to state for a frame. */
+    .page-enter-from,
+    .page-leave-to {
+      opacity: 1;
+      scale: 1;
+    }
   }
 }
