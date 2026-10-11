@@ -99,7 +99,7 @@ describe('FramedPanel', () => {
       expect(body.attributes('tabindex')).toBe('0')
       expect(body.classes()).toEqual(
         expect.arrayContaining([
-          'focus-visible:outline-1',
+          'focus-visible:outline-2',
           'focus-visible:outline-gold'
         ])
       )

@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
       :aria-label="open ? 'Close sections' : 'Sections'"
       :aria-expanded="open"
       :aria-controls="menuId"
-      class="fixed top-[22px] right-8 z-5 grid size-11 place-items-center transition-colors duration-200 hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-gold max-[720px]:top-3 max-[720px]:right-3"
+      class="fixed top-[22px] right-8 z-5 grid size-11 place-items-center transition-colors duration-200 hover:text-gold-hi focus-visible:outline-2 focus-visible:outline-gold max-[720px]:top-3 max-[720px]:right-3"
       :class="open ? 'text-gold-hi' : 'text-gold'"
       @click="toggle"
     >
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
         class="fixed inset-0 z-4 flex flex-col justify-center bg-bg2/94 px-6 backdrop-blur-[3px]"
       >
         <nav aria-label="Sections" class="mx-auto w-full max-w-[440px]">
-          <div class="mb-2 font-mono text-[11px] tracking-[4px] text-gold-hi">
+          <div class="mb-2 font-mono text-[12px] tracking-[3px] text-gold-hi">
             SECTIONS
           </div>
           <ol class="border-t border-gold/18">
@@ -149,13 +149,13 @@ onBeforeUnmount(() => {
               <NuxtLink
                 :to="section.to"
                 :aria-current="current === section.to ? 'page' : undefined"
-                class="flex items-center gap-4 border-b border-gold/18 py-4 no-underline focus-visible:outline-1 focus-visible:outline-gold"
+                class="flex items-center gap-4 border-b border-gold/18 py-4 no-underline focus-visible:outline-2 focus-visible:outline-gold"
                 :class="current === section.to ? 'text-gold-hi' : 'text-ink'"
                 @click="close"
               >
                 <span
                   data-number
-                  class="font-mono text-[10px] tracking-[2px] text-gold"
+                  class="font-mono text-[12px] tracking-[1px] text-gold"
                 >
                   {{ twoDigits(i + 1) }}
                 </span>

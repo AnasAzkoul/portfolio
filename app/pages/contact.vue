@@ -15,7 +15,7 @@ const channels: Channel[] = [
   {
     name: 'GitHub',
     href: 'https://github.com/AnasAzkoul',
-    handle: '@ANASAZKOUL ↗'
+    handle: '@ANASAZKOUL'
   },
   { name: 'LinkedIn', todo: 'add profile' }
 ]
@@ -40,12 +40,12 @@ const handleType = 'self-center font-mono text-[12px] tracking-[1px]'
         target="_blank"
         rel="noopener"
         :class="rowClass"
-        class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-1 focus-visible:outline-gold"
+        class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-2 focus-visible:outline-gold"
       >
         {{ channel.name }}
-        <span :class="handleType" class="text-ink-dim">{{
-          channel.handle
-        }}</span>
+        <span :class="handleType" class="text-ink-dim">
+          {{ channel.handle }} <span aria-hidden="true">↗</span>
+        </span>
         <span class="sr-only">, opens in a new tab</span>
       </a>
       <div v-else data-contact :class="rowClass">

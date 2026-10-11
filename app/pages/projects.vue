@@ -40,7 +40,7 @@ const rowDelay = (i: number) => 250 + i * 80
       :inert="projectOpen"
     >
       <div>
-        <div class="mb-2 font-mono text-[11px] tracking-[4px] text-gold-hi">
+        <div class="mb-2 font-mono text-[12px] tracking-[3px] text-gold-hi">
           02 · SELECTED PROJECTS
         </div>
         <h2
@@ -59,14 +59,14 @@ const rowDelay = (i: number) => 250 + i * 80
             <NuxtLink
               :to="`/projects/${project.slug}`"
               :data-previewed="i === previewed ? '' : undefined"
-              class="flex items-baseline gap-4 border-b border-gold/18 py-4 no-underline transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-gold"
+              class="flex items-baseline gap-4 border-b border-gold/18 py-4 no-underline transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-gold"
               :class="
                 i === previewed ? 'text-gold-hi' : 'text-ink-dim hover:text-ink'
               "
               @mouseenter="previewed = i"
               @focus="previewed = i"
             >
-              <span class="font-mono text-[10px] tracking-[2px] text-gold">
+              <span class="font-mono text-[12px] tracking-[1px] text-gold">
                 {{ twoDigits(i + 1) }}
               </span>
               <span
@@ -99,7 +99,7 @@ const rowDelay = (i: number) => 250 + i * 80
           class="px-9 py-8 max-[720px]:hidden short:hidden"
         >
           <div
-            class="mb-2.5 flex items-center gap-3 font-mono text-[11px] tracking-[4px] text-gold-hi"
+            class="mb-2.5 flex items-center gap-3 font-mono text-[12px] tracking-[3px] text-gold-hi"
           >
             <InlaidStar :jewel="preview.jewel" class="size-[26px]" />
             {{ preview.kicker }}
@@ -122,9 +122,9 @@ const rowDelay = (i: number) => 250 + i * 80
           <NuxtLink
             :to="`/projects/${preview.slug}`"
             tabindex="-1"
-            class="mt-7 inline-block border border-gold/45 px-3.5 py-2 font-mono text-[11px] tracking-[3px] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi"
+            class="mt-7 inline-block border border-gold/45 px-3.5 py-2 text-[17px] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi"
           >
-            OPEN CASE STUDY →
+            Open case study <span aria-hidden="true">→</span>
           </NuxtLink>
         </article>
       </Transition>

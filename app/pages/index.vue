@@ -38,7 +38,12 @@ const reveal = computed(() => [
       <span lang="ar" class="font-serif text-[20px] tracking-normal text-pearl">
         دمشق
       </span>
-      <span>DAMASCUS → WEERT</span>
+      <!-- Read aloud as "Damascus to Weert", not "Damascus right arrow Weert". -->
+      <span>
+        DAMASCUS <span aria-hidden="true">→</span
+        ><span class="sr-only">to</span>
+        WEERT
+      </span>
       <span
         aria-hidden="true"
         class="h-px w-[34px] bg-[linear-gradient(90deg,transparent,var(--color-gold),transparent)]"

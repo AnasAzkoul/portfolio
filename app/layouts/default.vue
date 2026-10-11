@@ -143,7 +143,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       <NuxtLink
         data-mark
         to="/"
-        class="absolute top-[31px] left-11 z-5 text-[18px] font-medium text-ink no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-[21px] max-[720px]:left-6"
+        class="absolute top-[31px] left-11 z-5 text-[18px] font-medium text-ink no-underline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-[21px] max-[720px]:left-6"
       >
         Anas Azkoul
       </NuxtLink>
@@ -157,7 +157,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
           :key="section.to"
           :to="section.to"
           :aria-current="currentSectionPath === section.to ? 'page' : undefined"
-          class="relative text-[17px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
+          class="relative text-[17px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
         >
           {{ section.name }}
         </NuxtLink>
@@ -181,7 +181,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     <div
       data-crumb
       aria-hidden="true"
-      class="absolute bottom-[30px] left-1/2 z-3 -translate-x-1/2 font-mono text-[11px] tracking-[4px] whitespace-nowrap text-ink-dim opacity-60 max-[720px]:hidden"
+      class="absolute bottom-[30px] left-1/2 z-3 -translate-x-1/2 font-mono text-[12px] tracking-[3px] whitespace-nowrap text-ink-dim opacity-60 max-[720px]:hidden"
     >
       {{ crumbText }}
     </div>

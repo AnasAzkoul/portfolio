@@ -144,12 +144,12 @@ describe('Escape', () => {
 })
 
 describe('focus styles', () => {
-  // Everything the keyboard can reach that lacks the gold focus outline.
+  // Everything the keyboard can reach that lacks the 2px gold focus outline.
   const unoutlined = (wrapper: Wrapper) =>
     tabbable(wrapper)
       .filter(
         (el) =>
-          !el.classes().includes('focus-visible:outline-1') ||
+          !el.classes().includes('focus-visible:outline-2') ||
           !el.classes().includes('focus-visible:outline-gold')
       )
       .map((el) => el.text() || el.html())
@@ -162,17 +162,79 @@ describe('focus styles', () => {
     '/stack',
     '/story',
     '/contact'
-  ])('outlines everything focusable in gold on %s', async (route) => {
+  ])('outlines everything focusable in 2px of gold on %s', async (route) => {
     const wrapper = await visit(route)
     expect(unoutlined(wrapper)).toEqual([])
   })
 
-  it('outlines the open section menu in gold', async () => {
+  it('outlines the open section menu in 2px of gold', async () => {
     const wrapper = await visit('/')
     await wrapper.find('[data-menu-toggle]').trigger('click')
     expect(wrapper.findAll('[data-section-menu] a')).not.toHaveLength(0)
     expect(unoutlined(wrapper)).toEqual([])
   })
+})
+
+// Every view, an open case study included.
+const views = [
+  '/',
+  '/experience',
+  '/projects',
+  '/projects/client-portfolio',
+  '/stack',
+  '/story',
+  '/contact'
+]
+
+describe('text size', () => {
+  // Each element set in a size under 12px, by its `text-[…px]` classes (a
+  // clamp's first value is its smallest), with its text. happy-dom applies
+  // no styles, so the classes are what there is to read.
+  const tooSmall = (wrapper: Wrapper) =>
+    wrapper.findAll('*').flatMap((el) =>
+      el
+        .classes()
+        .map((c) => c.match(/(?:^|:)text-\[(?:clamp\()?([\d.]+)px/)?.[1])
+        .filter((size) => size !== undefined && Number(size) < 12)
+        .map((size) => `${size}px: ${el.text()}`)
+    )
+
+  it.each(views)('sets no text under 12px on %s', async (route) => {
+    const wrapper = await visit(route)
+    expect(tooSmall(wrapper)).toEqual([])
+  })
+
+  it('sets no text under 12px in the open section menu', async () => {
+    const wrapper = await visit('/')
+    await wrapper.find('[data-menu-toggle]').trigger('click')
+    expect(wrapper.find('[data-section-menu]').exists()).toBe(true)
+    expect(tooSmall(wrapper)).toEqual([])
+  })
+})
+
+describe('symbols', () => {
+  // Each run of text with an arrow in it that a screen reader would read out.
+  const spokenArrows = (wrapper: Wrapper) =>
+    wrapper
+      .findAll('*')
+      .flatMap(({ element }) =>
+        [...element.childNodes]
+          .filter(
+            (node) =>
+              node.nodeType === Node.TEXT_NODE &&
+              /[→↗]/.test(node.textContent ?? '') &&
+              !element.closest('[aria-hidden="true"]')
+          )
+          .map((node) => node.textContent?.trim())
+      )
+
+  it.each(views)(
+    'hides every arrow from screen readers on %s',
+    async (route) => {
+      const wrapper = await visit(route)
+      expect(spokenArrows(wrapper)).toEqual([])
+    }
+  )
 })
 
 describe('tab order', () => {
