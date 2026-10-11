@@ -123,6 +123,19 @@ describe('projects', () => {
     ])
   })
 
+  it('has the rows enter one after another, each 80ms after the last', async () => {
+    const wrapper = await visit('/projects')
+    const delays = wrapper
+      .findAll('[data-projects-list] li')
+      .map((row) =>
+        parseFloat((row.element as HTMLElement).style.getPropertyValue('--d'))
+      )
+    expect(delays.length).toBeGreaterThan(1)
+    expect(delays[0]).toBe(250)
+    const steps = delays.slice(1).map((delay, i) => delay - delays[i]!)
+    expect(steps).toEqual(steps.map(() => 80))
+  })
+
   it('previews the first project until another is picked', async () => {
     const wrapper = await visit('/projects')
     const preview = wrapper.find('[data-projects-preview]')
