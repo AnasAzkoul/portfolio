@@ -14,9 +14,10 @@ type Wrapper = Awaited<ReturnType<typeof visit>>
 // breadcrumb, and the stage layout it sets the view and the lattice in.
 function stage(wrapper: Wrapper) {
   const style = wrapper.find('[data-lattice] svg').attributes('style') ?? ''
+  const crumb = wrapper.find('[data-crumb]')
   return {
     turn: style.match(/--turn: ([^;]+)/)?.[1],
-    crumb: wrapper.find('[data-crumb]').text(),
+    crumb: crumb.exists() ? crumb.text() : undefined,
     layout: wrapper.find('[data-stage]').attributes('data-stage')
   }
 }
@@ -44,11 +45,27 @@ describe('home', () => {
     await vi.waitFor(() => expect(name.classes()).not.toContain('opacity-0'))
   })
 
-  it('leaves the lattice unturned and centred, and invites a choice', async () => {
+  it('says what work you want, and links to the projects', async () => {
+    const wrapper = await visit('/')
+    expect(wrapper.find('[data-availability]').text()).toBe(
+      'Building production Nuxt apps at Scala. Open to frontend roles in the Netherlands.'
+    )
+    const cta = wrapper.find('[data-home-cta]')
+    expect(cta.text()).toBe('See projects')
+    expect(cta.attributes('href')).toBe('/projects')
+  })
+
+  it('drops the ornament and tagline on a short screen, so the link still fits', async () => {
+    const wrapper = await visit('/')
+    expect(wrapper.find('[data-divider]').classes()).toContain('short:hidden')
+    expect(wrapper.find('[data-tagline]').classes()).toContain('short:hidden')
+  })
+
+  it('leaves the lattice unturned and centred, and shows no breadcrumb', async () => {
     const wrapper = await visit('/')
     expect(stage(wrapper)).toEqual({
       turn: '0deg',
-      crumb: '— SELECT A SECTION —',
+      crumb: undefined,
       layout: 'centre'
     })
   })

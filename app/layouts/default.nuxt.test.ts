@@ -155,14 +155,16 @@ describe('default layout', () => {
     expect(marked).toEqual(current)
   })
 
-  it.each([
-    ['/', '— SELECT A SECTION —'],
-    ['/projects/learnflow', '— PROJECTS —']
-  ])('shows the breadcrumb from the page meta on %s', async (route, text) => {
-    const wrapper = await mountAt(route)
+  it('shows the breadcrumb from the page meta', async () => {
+    const wrapper = await mountAt('/projects/learnflow')
     const crumb = wrapper.find('[data-crumb]')
-    expect(crumb.text()).toBe(text)
+    expect(crumb.text()).toBe('— PROJECTS —')
     expect(crumb.attributes('aria-hidden')).toBe('true')
+  })
+
+  it('shows no breadcrumb on Home, which names no crumb', async () => {
+    const wrapper = await mountAt('/')
+    expect(wrapper.find('[data-crumb]').exists()).toBe(false)
   })
 })
 

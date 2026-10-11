@@ -6,7 +6,7 @@
  * It rises into place once, just after the first load, together with the
  * lattice. Coming back to Home later shows it at once.
  */
-// No crumb: the layout invites a choice instead.
+// No crumb: the layout shows no breadcrumb on Home.
 definePageMeta({ turn: 0 })
 
 const revealed = useState('home-revealed', () => false)
@@ -59,23 +59,48 @@ const reveal = computed(() => [
     >
       Anas Azkoul
     </h1>
+    <!-- On a short screen (a phone on its side) the ornament and tagline drop
+         out, so the line about work and the link to Projects still fit. -->
     <DiamondDivider
-      class="mx-auto mt-5 mb-[18px] delay-[680ms]"
+      data-divider
+      class="mx-auto mt-5 mb-[18px] delay-[680ms] short:hidden"
       :class="reveal"
     />
     <p
       data-role
-      class="font-mono text-[clamp(12px,1.6vw,15px)] tracking-[8px] text-ink-dim uppercase delay-[860ms]"
+      class="font-mono text-[clamp(12px,1.6vw,15px)] tracking-[8px] text-ink-dim uppercase delay-[860ms] short:mt-3"
       :class="reveal"
     >
       Frontend Developer
     </p>
     <p
       data-tagline
-      class="mt-[26px] text-[clamp(17px,2.4vw,22px)] text-gold-hi/90 italic delay-[860ms]"
+      class="mt-[26px] text-[clamp(17px,2.4vw,22px)] text-gold-hi/90 italic delay-[860ms] short:hidden"
       :class="reveal"
     >
       Old-city craft, built in code.
     </p>
+    <p
+      data-availability
+      class="mx-auto mt-3 max-w-[44ch] text-[clamp(16px,1.9vw,19px)] leading-[1.4] text-balance text-ink delay-[860ms]"
+      :class="reveal"
+    >
+      Building production Nuxt apps at Scala. Open to frontend roles in the
+      Netherlands.
+    </p>
+    <!-- The wrapper rises in with the rest; the link keeps its own quick
+         hover transition, free of the reveal's delay. -->
+    <div
+      class="mt-7 flex flex-wrap justify-center gap-3 delay-[1040ms] short:mt-4"
+      :class="reveal"
+    >
+      <NuxtLink
+        to="/projects"
+        data-home-cta
+        class="inline-block border border-gold/45 px-5 py-2.5 text-[18px] leading-[1.3] text-gold-hi no-underline transition-colors duration-200 hover:border-gold-hi focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-gold"
+      >
+        See projects
+      </NuxtLink>
+    </div>
   </div>
 </template>

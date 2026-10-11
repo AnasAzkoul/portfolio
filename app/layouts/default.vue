@@ -30,8 +30,9 @@ const menuOpen = ref(false)
 
 // A project under /projects/… still counts as being on Projects.
 const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
-const crumbText = computed(
-  () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`
+// Home names no crumb, so it shows none.
+const crumbText = computed(() =>
+  route.meta.crumb ? `— ${route.meta.crumb} —` : undefined
 )
 const stage = computed(() => route.meta.stage ?? 'centre')
 const stageClasses = computed(() => stageParts[stage.value])
@@ -181,6 +182,7 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     </main>
 
     <div
+      v-if="crumbText"
       data-crumb
       aria-hidden="true"
       class="absolute bottom-[30px] left-1/2 z-3 -translate-x-1/2 font-mono text-[12px] tracking-[3px] whitespace-nowrap text-ink-dim opacity-60 max-[720px]:hidden"
