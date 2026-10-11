@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+/* A screen too short to show a framed preview beside the Projects index,
+   such as a phone on its side. */
+@custom-variant short (@media (max-height: 600px));
+
 @theme {
   /* Only our palette exists (transparent/current still work, they are built in). */
   --color-*: initial;
@@ -35,6 +39,19 @@
 }
 
 @layer base {
+  /* With reduced motion asked for, nothing moves or fades. Each moving part
+     also settles itself (`motion-reduce:` classes, the lattice's own rules);
+     this catches the rest, down to colour fades on hover. `!important` in
+     this first layer outranks every utility and component style. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
   html {
     /* The design sets text on the fonts' own line-height, not Tailwind's 1.5. */
     line-height: normal;

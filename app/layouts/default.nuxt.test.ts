@@ -25,6 +25,20 @@ describe('default layout', () => {
     expect(area.find('[data-view]').text()).toBe('the view')
   })
 
+  it('tells the view how tall it can be, clear of the corner chrome', async () => {
+    const wrapper = await mountAt('/')
+    expect(wrapper.find('[data-view-area]').classes()).toEqual(
+      expect.arrayContaining([
+        'pt-[90px]',
+        'pb-[70px]',
+        '[--view-height:calc(100dvh_-_160px)]',
+        'max-[720px]:pt-[70px]',
+        'max-[720px]:pb-6',
+        'max-[720px]:[--view-height:calc(100dvh_-_94px)]'
+      ])
+    )
+  })
+
   it('lays the lattice and both overlays behind the view, hidden from assistive tech', async () => {
     const wrapper = await mountAt('/')
     expect(wrapper.find('[data-lattice] svg').exists()).toBe(true)
@@ -66,6 +80,13 @@ describe('default layout', () => {
     const mark = wrapper.find('[data-mark]')
     expect(mark.attributes('href')).toBe('/')
     expect(mark.text()).toBe('A. AZKOUL · EST. DAMASCUS')
+  })
+
+  it('tightens the mark below 360px, so it clears the section menu star', async () => {
+    const wrapper = await mountAt('/')
+    expect(wrapper.find('[data-mark]').classes()).toContain(
+      'max-[360px]:tracking-[1.5px]'
+    )
   })
 
   it('names the nav and links every section', async () => {

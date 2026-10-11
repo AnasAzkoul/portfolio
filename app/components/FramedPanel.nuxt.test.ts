@@ -127,6 +127,13 @@ describe('FramedPanel', () => {
     for (const o of ornaments) expect(o.attributes('aria-hidden')).toBe('true')
   })
 
+  it('grows no taller than the view area has room for', async () => {
+    const wrapper = await mountSuspended(FramedPanel, { props })
+    expect(wrapper.find('section').classes()).toContain(
+      'max-h-[min(74vh,720px,var(--view-height,100dvh))]'
+    )
+  })
+
   it.each([
     [undefined, 'w-[min(760px,92vw)]'],
     ['default', 'w-[min(760px,92vw)]'],

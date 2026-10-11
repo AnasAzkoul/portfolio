@@ -113,11 +113,12 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
     <!-- Ahead of the view in the DOM, so Tab reads the page as it looks:
          the mark, then the sections, then the view. -->
     <header>
-      <!-- Above the open section menu, so the way home stays in view. -->
+      <!-- Above the open section menu, so the way home stays in view. Below
+           360px its letters close up, so it clears the star opposite. -->
       <NuxtLink
         data-mark
         to="/"
-        class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6"
+        class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6 max-[360px]:tracking-[1.5px]"
       >
         A. AZKOUL · <b class="font-normal text-gold-hi">EST. DAMASCUS</b>
       </NuxtLink>
@@ -140,10 +141,12 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       <SectionMenu v-model:open="menuOpen" :current="currentSectionPath" />
     </header>
 
+    <!-- --view-height is the height its padding leaves for the view, so a
+         panel on a short screen stays clear of the mark and breadcrumb. -->
     <main
       ref="viewArea"
       data-view-area
-      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6"
+      class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] [--view-height:calc(100dvh_-_160px)] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6 max-[720px]:[--view-height:calc(100dvh_-_94px)]"
       :inert="menuOpen"
     >
       <slot />

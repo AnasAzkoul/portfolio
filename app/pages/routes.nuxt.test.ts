@@ -179,6 +179,16 @@ describe('projects', () => {
     ])
   })
 
+  it("shows the index alone on phones and short screens, where the preview doesn't fit", async () => {
+    const wrapper = await visit('/projects')
+    expect(wrapper.find('[data-projects-index]').classes()).toEqual(
+      expect.arrayContaining(['max-[720px]:grid-cols-1', 'short:grid-cols-1'])
+    )
+    expect(wrapper.find('[data-projects-preview]').classes()).toEqual(
+      expect.arrayContaining(['max-[720px]:hidden', 'short:hidden'])
+    )
+  })
+
   it('turns the lattice two steps and labels the breadcrumb', async () => {
     const wrapper = await visit('/projects')
     expect(stage(wrapper)).toEqual({ turn: '45deg', crumb: '— PROJECTS —' })

@@ -3,7 +3,8 @@
  * Projects: an index of the projects beside a framed preview of the one under
  * the pointer or keyboard focus (the first until then). The preview shows
  * its kicker, name, context and stack, so a visitor can read before opening
- * the case study. On a phone it's the index alone.
+ * the case study. On a phone, or a screen too short for the preview, it's the
+ * index alone.
  *
  * A project opens as the child route /projects/<slug>, over the index. The
  * index stays mounted underneath, hidden and inert, so it keeps the
@@ -27,7 +28,7 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
   <div class="grid place-items-center *:[grid-area:1/1]">
     <div
       data-projects-index
-      class="grid w-[min(1000px,94vw)] grid-cols-[minmax(0,330px)_1fr] items-center gap-12 max-[720px]:grid-cols-1"
+      class="grid w-[min(1000px,94vw)] grid-cols-[minmax(0,330px)_1fr] items-center gap-12 max-[720px]:grid-cols-1 short:grid-cols-1"
       :class="{ invisible: projectOpen }"
       :inert="projectOpen"
     >
@@ -83,7 +84,7 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
           :key="preview.slug"
           data-projects-preview
           :class="framedPanel({ variant: 'fluid' })"
-          class="px-9 py-8 max-[720px]:hidden"
+          class="px-9 py-8 max-[720px]:hidden short:hidden"
         >
           <div
             class="mb-2.5 flex items-center gap-3 font-mono text-[11px] tracking-[4px] text-gold-hi"
