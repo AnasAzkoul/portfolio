@@ -34,6 +34,13 @@ export default defineNuxtConfig({
     }
   },
   css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    public: {
+      // Link previews need absolute URLs. Netlify sets `URL` to the site's
+      // main address during its builds.
+      siteUrl: process.env.URL ?? 'http://localhost:3000'
+    }
+  },
   vite: {
     plugins: [tailwindcss()]
   },
