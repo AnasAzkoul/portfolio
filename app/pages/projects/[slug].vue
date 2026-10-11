@@ -61,7 +61,7 @@ const repoLabel = computed(() => project.value.repo?.replace(/^https:\/\//, ''))
         :href="project.repo"
         target="_blank"
         rel="noopener"
-        class="font-mono text-[12px] tracking-[2px] text-ink-dim no-underline transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-none"
+        class="font-mono text-[12px] tracking-[2px] text-ink-dim no-underline transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold"
       >
         {{ repoLabel }} ↗<span class="sr-only">, opens in a new tab</span>
       </a>

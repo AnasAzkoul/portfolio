@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { nextTick } from 'vue'
 import FramedPanel from './FramedPanel.vue'
 
 const props = {
@@ -57,6 +58,61 @@ describe('FramedPanel', () => {
     expect(body.classes()).toEqual(
       expect.arrayContaining(['overflow-y-auto', 'overscroll-contain'])
     )
+  })
+
+  describe('a body taller than the frame', () => {
+    // happy-dom lays nothing out, so this stands in for the browser: the body
+    // measures `clientHeight` tall with content `scrollHeight` tall, and is
+    // reported as soon as it's observed, as a browser does.
+    function layOut(clientHeight: number, scrollHeight: number) {
+      vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(
+        clientHeight
+      )
+      vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(
+        scrollHeight
+      )
+      vi.stubGlobal(
+        'ResizeObserver',
+        class {
+          constructor(private report: ResizeObserverCallback) {}
+          observe(target: Element) {
+            this.report(
+              [{ target } as ResizeObserverEntry],
+              this as unknown as ResizeObserver
+            )
+          }
+          disconnect() {}
+        }
+      )
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      vi.unstubAllGlobals()
+    })
+
+    it('takes a tab stop, so the keyboard can scroll it', async () => {
+      layOut(400, 900)
+      const wrapper = await mountSuspended(FramedPanel, { props })
+      await nextTick()
+      const body = wrapper.find('[data-panel-body]')
+      expect(body.attributes('tabindex')).toBe('0')
+      expect(body.classes()).toEqual(
+        expect.arrayContaining([
+          'focus-visible:outline-1',
+          'focus-visible:outline-gold'
+        ])
+      )
+    })
+
+    it('takes none when it all fits', async () => {
+      layOut(400, 400)
+      const wrapper = await mountSuspended(FramedPanel, { props })
+      await nextTick()
+      expect(
+        wrapper.find('[data-panel-body]').attributes('tabindex')
+      ).toBeUndefined()
+    })
   })
 
   it('sets a diamond ornament on each corner, hidden from assistive tech', async () => {

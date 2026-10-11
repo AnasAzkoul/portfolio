@@ -13,7 +13,8 @@
  * stars; only the page's root element takes pointer events.
  *
  * After each navigation, focus moves to the new view's heading: the one
- * heading in the view with tabindex="-1".
+ * heading in the view with tabindex="-1". Escape closes the view, one level
+ * up: a case study to Projects, a section to Home.
  */
 defineSlots<{ default?: () => unknown }>()
 
@@ -21,6 +22,15 @@ const route = useRoute()
 const router = useRouter()
 const nuxtApp = useNuxtApp()
 const viewArea = useTemplateRef('viewArea')
+
+// While the section menu is open, the page behind it is inert.
+const menuOpen = ref(false)
+
+// A project under /projects/… still counts as being on Projects.
+const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
+const crumbText = computed(
+  () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`
+)
 
 // A case study opens over the Projects index, which keeps its own heading
 // but is inert underneath, so that heading is passed over.
@@ -32,26 +42,35 @@ function focusViewHeading() {
   heading?.focus({ preventScroll: true })
 }
 
-// Not on the first load: focus starts at the top of the document then. The
-// new page is only in place once it has finished loading, so wait for that,
-// as Nuxt's own scroll behaviour does.
+// Home has nowhere to close to.
+const closeTo = computed(() => {
+  const depth = route.path.split('/').filter(Boolean).length
+  if (depth === 0) return undefined
+  return depth > 1 ? currentSectionPath.value : '/'
+})
+
+// The open section menu claims Escape first (its listener is added before
+// this one) and marks it handled, so the view behind stays open.
+function onKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Escape' || event.defaultPrevented || !closeTo.value) return
+  navigateTo(closeTo.value)
+}
+
+// Focus doesn't move on the first load: it starts at the top of the
+// document then. The new page is only in place once it has finished loading,
+// so wait for that, as Nuxt's own scroll behaviour does.
 let stopFocusingViews: (() => void) | undefined
 onMounted(() => {
   stopFocusingViews = router.afterEach((to, from, failure) => {
     if (failure || to.path === from.path) return
     nuxtApp.hooks.hookOnce('page:loading:end', focusViewHeading)
   })
+  window.addEventListener('keydown', onKeydown)
 })
-onBeforeUnmount(() => stopFocusingViews?.())
-
-// While the section menu is open, the page behind it is inert.
-const menuOpen = ref(false)
-
-// A project under /projects/… still counts as being on Projects.
-const currentSectionPath = computed(() => `/${route.path.split('/')[1]}`)
-const crumbText = computed(
-  () => `— ${route.meta.crumb ?? 'SELECT A SECTION'} —`
-)
+onBeforeUnmount(() => {
+  stopFocusingViews?.()
+  window.removeEventListener('keydown', onKeydown)
+})
 
 // The lattice fades in once, just after the first load; the layout then
 // stays mounted across routes, so it never fades again.
@@ -91,40 +110,44 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
       class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_50%_46%,transparent_52%,var(--color-bg3)_92%)]"
     />
 
-    <div
+    <!-- Ahead of the view in the DOM, so Tab reads the page as it looks:
+         the mark, then the sections, then the view. -->
+    <header>
+      <!-- Above the open section menu, so the way home stays in view. -->
+      <NuxtLink
+        data-mark
+        to="/"
+        class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6"
+      >
+        A. AZKOUL · <b class="font-normal text-gold-hi">EST. DAMASCUS</b>
+      </NuxtLink>
+
+      <nav
+        aria-label="Sections"
+        class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[900px]:hidden"
+      >
+        <NuxtLink
+          v-for="section in sections"
+          :key="section.to"
+          :to="section.to"
+          :aria-current="currentSectionPath === section.to ? 'page' : undefined"
+          class="relative text-[12px] tracking-[3px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
+        >
+          {{ section.label }}
+        </NuxtLink>
+      </nav>
+
+      <SectionMenu v-model:open="menuOpen" :current="currentSectionPath" />
+    </header>
+
+    <main
       ref="viewArea"
       data-view-area
       class="pointer-events-none absolute inset-0 z-2 flex flex-col items-center justify-center px-6 pt-[90px] pb-[70px] *:pointer-events-auto max-[720px]:px-4 max-[720px]:pt-[70px] max-[720px]:pb-6"
       :inert="menuOpen"
     >
       <slot />
-    </div>
-
-    <!-- Above the open section menu, so the way home stays in view. -->
-    <NuxtLink
-      data-mark
-      to="/"
-      class="absolute top-[34px] left-11 z-5 font-mono text-[13px] tracking-[3px] text-ink-dim no-underline focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold max-[720px]:top-6 max-[720px]:left-6"
-    >
-      A. AZKOUL · <b class="font-normal text-gold-hi">EST. DAMASCUS</b>
-    </NuxtLink>
-
-    <nav
-      aria-label="Sections"
-      class="absolute top-9 right-11 z-3 flex gap-[26px] font-mono max-[900px]:hidden"
-    >
-      <NuxtLink
-        v-for="section in sections"
-        :key="section.to"
-        :to="section.to"
-        :aria-current="currentSectionPath === section.to ? 'page' : undefined"
-        class="relative text-[12px] tracking-[3px] text-ink-dim no-underline transition-[color] duration-200 ease-[ease] hover:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[5px] focus-visible:outline-gold aria-[current=page]:text-gold-hi aria-[current=page]:after:absolute aria-[current=page]:after:-bottom-2.5 aria-[current=page]:after:left-1/2 aria-[current=page]:after:size-[5px] aria-[current=page]:after:-translate-x-1/2 aria-[current=page]:after:rotate-45 aria-[current=page]:after:border aria-[current=page]:after:border-gold-hi aria-[current=page]:after:content-['']"
-      >
-        {{ section.label }}
-      </NuxtLink>
-    </nav>
-
-    <SectionMenu v-model:open="menuOpen" :current="currentSectionPath" />
+    </main>
 
     <div
       data-crumb

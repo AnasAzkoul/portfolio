@@ -46,7 +46,7 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
             <NuxtLink
               :to="`/projects/${project.slug}`"
               :data-previewed="i === previewed ? '' : undefined"
-              class="flex items-baseline gap-4 border-b border-gold/18 py-4 no-underline transition-colors duration-300 focus-visible:outline-none"
+              class="flex items-baseline gap-4 border-b border-gold/18 py-4 no-underline transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-gold"
               :class="
                 i === previewed ? 'text-gold-hi' : 'text-ink-dim hover:text-ink'
               "

@@ -12,6 +12,10 @@
  * copy) styles, so content can use plain elements.
  *
  * The title has tabindex="-1" so the view can move focus to it on open.
+ *
+ * A body taller than the frame takes a tab stop of its own, so the keyboard
+ * can scroll it even when it holds nothing focusable (not every browser
+ * gives a scroller one).
  */
 import type { RouteLocationRaw } from 'vue-router'
 import { framedPanel, type FramedPanelVariants } from './FramedPanel.variants'
@@ -32,6 +36,22 @@ defineSlots<{ default?: () => unknown }>()
 
 const titleId = useId()
 const corners = ['tl', 'tr', 'bl', 'br'] as const
+
+const body = useTemplateRef('body')
+const bodyScrolls = ref(false)
+function measureBody() {
+  const el = body.value
+  bodyScrolls.value = !!el && el.scrollHeight > el.clientHeight
+}
+
+// Measured again whenever the body resizes, e.g. with the window.
+let bodyObserver: ResizeObserver | undefined
+onMounted(() => {
+  if (!body.value) return
+  bodyObserver = new ResizeObserver(measureBody)
+  bodyObserver.observe(body.value)
+})
+onBeforeUnmount(() => bodyObserver?.disconnect())
 </script>
 
 <template>
@@ -67,14 +87,16 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
       <NuxtLink
         :to="closeTo"
         :aria-label="closeLabel"
-        class="shrink-0 border border-gold/35 px-2.5 py-1.5 font-mono text-[10px] tracking-[2px] text-ink-dim no-underline transition-colors duration-200 hover:border-gold-hi hover:text-gold-hi focus-visible:border-gold-hi focus-visible:text-gold-hi focus-visible:outline-none"
+        class="shrink-0 border border-gold/35 px-2.5 py-1.5 font-mono text-[10px] tracking-[2px] text-ink-dim no-underline transition-colors duration-200 hover:border-gold-hi hover:text-gold-hi focus-visible:border-gold-hi focus-visible:text-gold-hi focus-visible:outline-1 focus-visible:outline-offset-[3px] focus-visible:outline-gold"
       >
         ESC ✕
       </NuxtLink>
     </header>
     <div
+      ref="body"
       data-panel-body
-      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-mono [&_h3]:text-[11px] [&_h3]:font-normal [&_h3]:tracking-[4px] [&_h3]:text-gold [&_h3]:uppercase [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
+      :tabindex="bodyScrolls ? 0 : undefined"
+      class="[scrollbar-width:thin] [scrollbar-color:--alpha(var(--color-gold)/40%)_transparent] overflow-y-auto overscroll-contain px-[34px] pt-2 pb-8 text-ink focus-visible:outline-1 focus-visible:-outline-offset-8 focus-visible:outline-gold max-[720px]:px-[22px] max-[720px]:pt-1.5 max-[720px]:pb-[26px] [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-mono [&_h3]:text-[11px] [&_h3]:font-normal [&_h3]:tracking-[4px] [&_h3]:text-gold [&_h3]:uppercase [&_p]:text-[19px] [&_p]:leading-[1.55] [&_p+p]:mt-3"
     >
       <slot />
     </div>

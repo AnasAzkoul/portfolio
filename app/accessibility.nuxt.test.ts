@@ -47,6 +47,147 @@ describe('after each navigation', () => {
   })
 })
 
+describe('Escape', () => {
+  // Cancelable, like a real key press, so a handler can claim it.
+  const pressEscape = () =>
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+    )
+  const currentPath = () => useRouter().currentRoute.value.fullPath
+
+  it.each([
+    ['/projects/learnflow', '/projects'],
+    ['/projects', '/'],
+    ['/experience', '/'],
+    ['/contact', '/']
+  ])('closes %s back to %s', async (route, closedTo) => {
+    await visit(route)
+    pressEscape()
+    await vi.waitFor(() => expect(currentPath()).toBe(closedTo))
+  })
+
+  it('adds the closing to the history, so Back reopens the view', async () => {
+    await visit('/stack')
+    pressEscape()
+    await vi.waitFor(() => expect(currentPath()).toBe('/'))
+    useRouter().back()
+    await vi.waitFor(() => expect(currentPath()).toBe('/stack'))
+  })
+
+  it('does nothing on Home', async () => {
+    await visit('/')
+    pressEscape()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(currentPath()).toBe('/')
+  })
+
+  it('only closes the section menu while it is open', async () => {
+    const wrapper = await visit('/stack')
+    await wrapper.find('[data-menu-toggle]').trigger('click')
+    pressEscape()
+    await vi.waitFor(() =>
+      expect(wrapper.find('[data-section-menu]').exists()).toBe(false)
+    )
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(currentPath()).toBe('/stack')
+  })
+})
+
+describe('focus styles', () => {
+  type Wrapper = Awaited<ReturnType<typeof visit>>
+
+  // Everything the keyboard can reach that lacks the gold focus outline.
+  const unoutlined = (wrapper: Wrapper) =>
+    wrapper
+      .findAll('a[href], button, [tabindex]')
+      .filter((el) => el.attributes('tabindex') !== '-1')
+      .filter(
+        (el) =>
+          !el.classes().includes('focus-visible:outline-1') ||
+          !el.classes().includes('focus-visible:outline-gold')
+      )
+      .map((el) => el.text() || el.html())
+
+  it.each([
+    '/',
+    '/experience',
+    '/projects',
+    '/projects/client-portfolio',
+    '/stack',
+    '/story',
+    '/contact'
+  ])('outlines everything focusable in gold on %s', async (route) => {
+    const wrapper = await visit(route)
+    expect(unoutlined(wrapper)).toEqual([])
+  })
+
+  it('outlines the open section menu in gold', async () => {
+    const wrapper = await visit('/')
+    await wrapper.find('[data-menu-toggle]').trigger('click')
+    expect(wrapper.findAll('[data-section-menu] a')).not.toHaveLength(0)
+    expect(unoutlined(wrapper)).toEqual([])
+  })
+})
+
+describe('tab order', () => {
+  type Wrapper = Awaited<ReturnType<typeof visit>>
+
+  // What a screen reader names each stop the keyboard reaches, in order.
+  const stops = (wrapper: Wrapper) =>
+    wrapper
+      .findAll('a[href], button, [tabindex]')
+      .filter((el) => el.attributes('tabindex') !== '-1')
+      .filter((el) => !el.element.closest('[inert]'))
+      .map((el) => el.attributes('aria-label') ?? el.text())
+
+  it('runs from the mark and the sections into the view, as the page reads', async () => {
+    const wrapper = await visit('/contact')
+    expect(stops(wrapper)).toEqual([
+      'A. AZKOUL · EST. DAMASCUS',
+      'EXPERIENCE',
+      'PROJECTS',
+      'STACK',
+      'STORY',
+      'CONTACT',
+      'Sections',
+      'Close',
+      'GitHub @ANASAZKOUL ↗, opens in a new tab'
+    ])
+  })
+
+  it('passes over the Projects index while a case study is open over it', async () => {
+    const wrapper = await visit('/projects/client-portfolio')
+    expect(stops(wrapper).slice(7)).toEqual([
+      'Back to all projects',
+      'github.com/AnasAzkoul/martin-portfolio ↗, opens in a new tab'
+    ])
+  })
+
+  it('keeps to the mark and the section menu while the menu is open', async () => {
+    const wrapper = await visit('/contact')
+    await wrapper.find('[data-menu-toggle]').trigger('click')
+    expect(stops(wrapper)).toEqual([
+      'A. AZKOUL · EST. DAMASCUS',
+      'EXPERIENCE',
+      'PROJECTS',
+      'STACK',
+      'STORY',
+      'CONTACT',
+      'Close sections',
+      '01ExperienceWORK EXPERIENCE',
+      '02ProjectsSELECTED PROJECTS',
+      '03StackTOOLS OF THE CRAFT',
+      '04StoryHOW I CAME TO THE FRONTEND',
+      '05ContactOPEN TO FRONTEND ROLES IN NL'
+    ])
+  })
+
+  it('puts the view in the main landmark', async () => {
+    const wrapper = await visit('/contact')
+    expect(wrapper.find('main').find('section h2').text()).toBe('Contact')
+  })
+})
+
 describe('route announcements', () => {
   it('declares the page English, so screen readers pick the right voice', async () => {
     await visit('/')

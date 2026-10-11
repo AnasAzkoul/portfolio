@@ -44,9 +44,11 @@ function close() {
   open.value = false
 }
 
-// Escape closes it and hands focus back to the button.
+// Escape closes it and hands focus back to the button. It marks the key
+// handled, so the view behind doesn't close too.
 function onKeydown(event: KeyboardEvent) {
   if (event.key !== 'Escape' || !open.value) return
+  event.preventDefault()
   close()
   toggleButton.value?.focus()
 }

@@ -41,7 +41,7 @@ const handleType = 'self-center font-mono text-[11px] tracking-[2px]'
         target="_blank"
         rel="noopener"
         :class="rowClass"
-        class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-none"
+        class="transition-colors duration-200 hover:text-gold-hi focus-visible:text-gold-hi focus-visible:outline-1 focus-visible:outline-gold"
       >
         {{ channel.name }}
         <span :class="handleType" class="text-ink-dim">{{
